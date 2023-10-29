@@ -1,3 +1,25 @@
 {% extends "base.html" %} {$ block title %}Home{ %endblock% }
 {% block content %}
+<h1>Shifts</h1>
+<ul class="list-group list-group-flush" id="shifts">
+    {% for shift in user.shifts %}
+    <li class="list-group-item">{{ shift.data }}</li>
+    {% endfor %}
+</ul>
+<form method="POST">
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" class="form-control" required><br>
+
+    <label for="start_time">Starting Time:</label>
+    <input type="time" id="start_time" name="start_time" class="form-control" required><br>
+
+    <label for="finish_time">Finishing Time:</label>
+    <input type="time" id="finish_time" name="finish_time" class="form-control" required><br>
+
+    <br />
+
+    <div align="center">
+        <button type="submit" class="btn btn-primary" value="Submit">Add Shift</button>
+    </div>
+</form>
 {% endblock %}
