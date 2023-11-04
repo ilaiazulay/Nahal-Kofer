@@ -39,3 +39,37 @@ def home():
         flash('Shift added!', category='success')
 
     return render_template("home.html", user=current_user)
+
+def calculate_payroll(start_date, end_date):
+    shifts = Shift.query.filter(
+        Shift.user_id == current_user,
+        Shift.date >= start_date,
+        Shift.date <= end_date
+    ).all()
+
+    base_wage = current_user.base_wage
+
+    if shifts:
+        for shift in shifts:
+            shift_start = shift.start
+            shift_finish = shift.finish
+            shift_date = shift.date
+            shift_duration = (shift_finish.hour - shift_start.hour) + (shift_finish.minute - shift_start.minute) / 60
+
+            # if the shift is between 20:00
+            if shift_start >= time(20, 0) or shift_start < time(6, 0):
+                print("1")
+            elif shift_date.weekday() == 4:  # Friday
+                if shift_start >= time(6, 0) and shift_finish <= time(16, 0):
+                    print("2")
+                elif shift_start >= time(16, 0) or shift_start < time(6, 0):
+                    print("3")
+
+            if shift_duration > 9:
+                print("4")
+
+            if shift_date.weekday() == 4:
+                pass
+
+    else:
+        flash('No shifts found for the given date range.', category='info')
