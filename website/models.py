@@ -4,9 +4,8 @@ from flask_login import UserMixin
 
 class Shift(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime(timezone=True))
-    start = db.Column(db.Time)
-    finish = db.Column(db.Time)
+    start = db.Column(db.DateTime(timezone=True))
+    finish = db.Column(db.DateTime(timezone=True))
     data = db.Column(db.String(150))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

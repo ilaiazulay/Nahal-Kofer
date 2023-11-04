@@ -7,14 +7,12 @@
     {% endfor %}
 </ul>
 <form method="POST">
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="date" class="form-control" required><br>
 
     <label for="start_time">Starting Time:</label>
-    <input type="time" id="start_time" name="start_time" class="form-control" required><br>
+    <input type="datetime-local" id="start_time" name="start_time" class="form-control" required><br>
 
     <label for="finish_time">Finishing Time:</label>
-    <input type="time" id="finish_time" name="finish_time" class="form-control" required><br>
+    <input type="datetime-local" id="finish_time" name="finish_time" class="form-control" required><br>
 
     <br />
 
