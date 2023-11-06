@@ -37,46 +37,52 @@ with app.app_context():
 
         while shift_start < shift_finish:
             shift_date = shift_start.date()
+            hour_wage_rate = (hourly_wage_rates.get(shift_start.hour, 0))
+            if hour_wage_rate > 1:
+                hour_wage_rate = 0.3
             if shift_start.minute == 0:
                 current_hour_rate = calculate_hour_rate(shift_start, base_wage, extra_hours, hourly_wage_rates)
             else:
                 if shift_date.weekday() in (4,) and 6 <= shift_start.hour < 16:  # Friday from 6:00 to 15:59
-                    current_hour_rate = base_wage * ((1.3 + extra_hours) * (60 - shift_start.minute) / 60)
+                    current_hour_rate = base_wage * ((1.3 + extra_hours + hour_wage_rate) * (60 - shift_start.minute) / 60)
                     print("Friday from 6:00 to 15:59 calculate minutes ", (60 - shift_start.minute), " * 1.3: ", current_hour_rate)
                     minutes_advance = timedelta(minutes=60 - shift_start.minute)
                     shift_start = shift_start + minutes_advance
-                    current_hour_rate += base_wage * (1.3 + extra_hours)
+                    current_hour_rate += base_wage * (1.3 + extra_hours + hour_wage_rate)
                     print("Friday from 6:00 to 15:59 calculate hour * 1.3: ", current_hour_rate)
                 elif shift_date.weekday() in (4,) and 16 <= shift_start.hour <= 23:  # friday from 16:00 to 23:59
-                    current_hour_rate = base_wage * ((1.5 + extra_hours) * (60 - shift_start.minute) / 60)
+                    current_hour_rate = base_wage * ((1.5 + extra_hours + hour_wage_rate) * (60 - shift_start.minute) / 60)
                     print("Friday from 16:00 to 23:59 calculate minutes ", (60 - shift_start.minute), " * 1.5: ", current_hour_rate)
                     minutes_advance = timedelta(minutes=60 - shift_start.minute)
                     shift_start = shift_start + minutes_advance
-                    current_hour_rate += base_wage * (1.5 + extra_hours)
+                    current_hour_rate += base_wage * (1.5 + extra_hours + hour_wage_rate)
                     print("Friday from 16:00 to 23:59 calculate hour * 1.5: ", current_hour_rate)
                 elif shift_date.weekday() in (5,):  # saturday all day
-                    current_hour_rate = base_wage * ((1.5 + extra_hours) * (60 - shift_start.minute) / 60)
+                    current_hour_rate = base_wage * ((1.5 + extra_hours + hour_wage_rate) * (60 - shift_start.minute) / 60)
                     print("saturday all day calculate minutes ", (60 - shift_start.minute), " * 1.5: ", current_hour_rate)
                     minutes_advance = timedelta(minutes=60 - shift_start.minute)
                     shift_start = shift_start + minutes_advance
-                    current_hour_rate += base_wage * (1.5 + extra_hours)
+                    current_hour_rate += base_wage * (1.5 + extra_hours + hour_wage_rate)
                     print("saturday all day calculate hour * 1.5: ", current_hour_rate)
                 elif shift_date.weekday() in (6,) and 0 <= shift_start.hour < 6:  # sunday from 00:00 to 5:59
-                    current_hour_rate = base_wage * ((1.5 + extra_hours) * (60 - shift_start.minute) / 60)
+                    current_hour_rate = base_wage * ((1.5 + extra_hours + hour_wage_rate) * (60 - shift_start.minute) / 60)
                     print("sunday from 00:00 to 5:59 calculate minutes ", (60 - shift_start.minute), " * 1.5: ", current_hour_rate)
                     minutes_advance = timedelta(minutes=60 - shift_start.minute)
                     shift_start = shift_start + minutes_advance
-                    current_hour_rate += base_wage * (1.5 + extra_hours)
+                    current_hour_rate += base_wage * (1.5 + extra_hours + hour_wage_rate)
                     print("sunday from 00:00 to 5:59 calculate hour * 1.5: ", current_hour_rate)
                 else:
-                    current_hour_rate = base_wage * ((hourly_wage_rates.get(shift_start.hour, 1.0) + extra_hours) * (60 - shift_start.minute) / 60)  # Default rate is 1.0 (100%)
+                    current_hour_rate = base_wage * ((hour_wage_rate + extra_hours) * (60 - shift_start.minute) / 60)  # Default rate is 1.0 (100%)
                     print("weekday calculate minutes ", (60 - shift_start.minute), " * hourly_wage: ", current_hour_rate)
                     minutes_advance = timedelta(minutes=60 - shift_start.minute)
                     shift_start = shift_start + minutes_advance
-                    current_hour_rate += base_wage * (hourly_wage_rates.get(shift_start.hour, 1.0) + extra_hours)  # Default rate is 1.0 (100%)
+                    current_hour_rate += base_wage * (hour_wage_rate + extra_hours)  # Default rate is 1.0 (100%)
                     print("weekday calculate hour * hour_wage: ", current_hour_rate)
             if shift_start.hour == shift_finish.hour:
                 if shift_start.minute != shift_finish.minute:
+                    hour_wage_rate = (hourly_wage_rates.get(shift_start.hour, 0))
+                    if hour_wage_rate > 1:
+                        hour_wage_rate -= 1
                     print(shift_start, shift_date.weekday())
                     current_hour_rate = calculate_hour_rate(shift_start, base_wage, extra_hours, hourly_wage_rates)
                     print(current_hour_rate)
@@ -102,20 +108,23 @@ with app.app_context():
 
     def calculate_hour_rate(shift_start, base_wage, extra_hours, hourly_wage_rates):
         shift_date = shift_start.date()
+        hour_wage_rate = (hourly_wage_rates.get(shift_start.hour, 0))
+        if hour_wage_rate > 1:
+            hour_wage_rate = 0.3
         if shift_date.weekday() in (4,) and 6 <= shift_start.hour < 16:  # Friday from 6:00 to 15:59
-            current_hour_rate = base_wage * (1.3 + extra_hours)
+            current_hour_rate = base_wage * (1.3 + extra_hours + hour_wage_rate)
             print("Friday from 6:00 to 15:59 calculate hour * 1.3: ", current_hour_rate)
         elif shift_date.weekday() in (4,) and 16 <= shift_start.hour <= 23:  # friday from 16:00 to 23:59
-            current_hour_rate = base_wage * (1.5 + extra_hours)
+            current_hour_rate = base_wage * (1.5 + extra_hours + hour_wage_rate)
             print("friday from 16:00 to 23:59 calculate hour * 1.3: ", current_hour_rate)
         elif shift_date.weekday() in (5,):  # saturday all day
-            current_hour_rate = base_wage * (1.5 + extra_hours)
+            current_hour_rate = base_wage * (1.5 + extra_hours + hour_wage_rate)
             print("saturday all day calculate hour * 1.5: ", current_hour_rate)
         elif shift_date.weekday() in (6,) and 0 <= shift_start.hour < 6:  # sunday from 00:00 to 5:59
-            current_hour_rate = base_wage * (1.5 + extra_hours)
+            current_hour_rate = base_wage * (1.5 + extra_hours + hour_wage_rate)
             print("sunday from 00:00 to 5:59 calculate hour * 1.5: ", current_hour_rate)
         else:
-            current_hour_rate = base_wage * (hourly_wage_rates.get(shift_start.hour, 1.0) + extra_hours)  # Default rate is 1.0 (100%)
+            current_hour_rate = base_wage * (hour_wage_rate + extra_hours)  # Default rate is 1.0 (100%)
             print("weekday according to hour: ", current_hour_rate)
         return current_hour_rate
 
