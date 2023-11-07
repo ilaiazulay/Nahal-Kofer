@@ -1,16 +1,35 @@
 {% extends "base.html" %} {$ block title %}Home{ %endblock% }
 {% block content %}
-<h1>Shifts</h1>
-<ul class="list-group list-group-flush" id="shifts">
+<br />
+<h2>Shifts</h2>
+<br />
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Start Date & Time</th>
+        <th>Finish Date & Time</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
     {% for shift in user.shifts %}
-    <li class="list-group-item">
-        {{ shift.data }}
-        <button type="button" class="close" onClick="deleteShift({{ shift.id }})">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </li>
+    <tr>
+        <td>{{ shift.start.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ shift.finish.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>
+            <button type="button" class="close" onClick="deleteShift({{ shift.id }})">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </td>
+    </tr>
     {% endfor %}
-</ul>
+    </tbody>
+</table>
+
+<h2>Add Shifts</h2>
+<br />
+
 <form method="POST">
 
     <label for="start_time">Starting Time:</label>
