@@ -3,7 +3,12 @@
 <h1>Shifts</h1>
 <ul class="list-group list-group-flush" id="shifts">
     {% for shift in user.shifts %}
-    <li class="list-group-item">{{ shift.data }}</li>
+    <li class="list-group-item">
+        {{ shift.data }}
+        <button type="button" class="close" onClick="deleteShift({{ shift.id }})">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </li>
     {% endfor %}
 </ul>
 <form method="POST">
