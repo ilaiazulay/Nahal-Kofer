@@ -4,6 +4,7 @@ from .models import Shift
 from . import db
 from datetime import datetime, time
 import json
+from .calculate import calculate_daily_salary, hourly_wage_rates
 
 
 views = Blueprint('views', __name__)
@@ -52,6 +53,7 @@ def home():
 
 
 @views.route('/delete-shift', methods=['POST'])
+@login_required
 def delete_shift():
     shift = json.loads(request.data)
     shift_id = shift['shiftId']
@@ -62,3 +64,41 @@ def delete_shift():
             db.session.commit()
 
     return jsonify({})
+
+
+@views.route('/calculate_page')
+@login_required
+def calculate_page():
+    return redirect(url_for('views.calculate_salary'))
+
+
+@views.route('/calculate_salary', methods=['GET', 'POST'])
+@login_required
+def calculate_salary():
+    salary = None  # Initialize salary variable
+
+    if request.method == 'POST':
+
+        string_start_time = request.form.get('start_time')
+        string_finish_time = request.form.get('finish_time')
+
+        string_start_time += ' 00:00'
+        string_finish_time += ' 00:00'
+
+        print(string_start_time, string_finish_time)
+
+        # Convert the start_time and finish_time strings to time variables
+        start_time = datetime.strptime(string_start_time, '%Y-%m-%d %H:%M')
+        finish_time = datetime.strptime(string_finish_time, '%Y-%m-%d %H:%M')
+        print(type(start_time), type(finish_time), current_user.id)
+        # Calculate the duration between start_time and finish_time
+
+        if start_time >= finish_time:
+            flash('Start of the shift can not be after or the same as the end of the shift', category='error')
+
+        else:
+            salary = calculate_daily_salary(start_time, finish_time, current_user.shifts, hourly_wage_rates)
+            print(salary)
+            # return redirect(url_for('views.calculate_salary'))
+
+    return render_template("calculate_salary.html", user=current_user, salary=salary)

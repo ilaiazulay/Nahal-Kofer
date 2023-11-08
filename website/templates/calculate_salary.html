@@ -1,0 +1,30 @@
+{% extends "base.html" %} {$ block title %}Home{ %endblock% }
+{% block content %}
+<br />
+<h2>Calculate Salary</h2>
+<br />
+
+<form method="POST">
+
+  <label for="start_time">Starting Time:</label>
+  <input type="date" id="start_time" name="start_time" class="form-control" value="{{ request.form.get('start_time') }}" required><br>
+
+  <label for="finish_time">Finishing Time:</label>
+  <input type="date" id="finish_time" name="finish_time" class="form-control" value="{{ request.form.get('finish_time') }}" required><br>
+
+  <br />
+
+  <div align="center">
+    <button type="submit" class="btn btn-primary" value="Submit">Calculate</button>
+  </div>
+</form>
+
+{% if salary is not none %}
+<br>
+<div class="result-container" align="center">
+  <h3>Your Salary:</h3>
+  <p class="salary-amount" style="font-size: 24px;">{{ '{:,.2f}'.format(salary) }}</p>
+</div>
+{% endif %}
+
+{% endblock %}
