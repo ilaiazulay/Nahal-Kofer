@@ -1,4 +1,6 @@
-flask
+flask~=3.0.0
 Flask-SQLAlchemy
 flask-login
 Werkzeug==2.2.2
+python-dotenv~=1.0.0
+SQLAlchemy~=2.0.22
