@@ -1,5 +1,7 @@
 # Payroll Calculator for Hi-Tech Company
 
+**Note: This is an early stage built. The application is currently in the testing phase and is tailored specifically to meet the unique requirements of a hi-tech company. It is not intended for general use and may not be suitable for applications outside of the specified conditions.**
+
 ## Overview
 
 This Python project is a payroll calculator designed to meet the custom needs of a specific hi-tech company. It utilizes Flask for the web framework, SQLite for data storage, and includes various conditions and variables for accurate payroll calculations.
