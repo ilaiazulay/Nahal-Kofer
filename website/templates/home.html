@@ -1,4 +1,5 @@
-{% extends "base.html" %} {$ block title %}Home{ %endblock% }
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
 {% block content %}
 <br />
 <h2>Shifts</h2>
@@ -18,7 +19,7 @@
         <td>{{ shift.start.strftime('%Y-%m-%d %H:%M') }}</td>
         <td>{{ shift.finish.strftime('%Y-%m-%d %H:%M') }}</td>
         <td>
-            <button type="button" class="close" onClick="deleteShift({{ shift.id }})">
+            <button type="button" class="close" onClick="confirmDelete({{ shift.id }})">
                 <span aria-hidden="true">&times;</span>
             </button>
         </td>

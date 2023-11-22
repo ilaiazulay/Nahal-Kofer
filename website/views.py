@@ -76,6 +76,8 @@ def calculate_page():
 @login_required
 def calculate_salary():
     salary = None  # Initialize salary variable
+    start_time = None
+    finish_time = None
 
     if request.method == 'POST':
 
@@ -101,4 +103,4 @@ def calculate_salary():
             print(salary)
             # return redirect(url_for('views.calculate_salary'))
 
-    return render_template("calculate_salary.html", user=current_user, salary=salary)
+    return render_template("calculate_salary.html", user=current_user, salary=salary, start_time=start_time, finish_time=finish_time)
