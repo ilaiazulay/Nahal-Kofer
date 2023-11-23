@@ -160,7 +160,7 @@ def calculate_hour_rate(shift_start, base_wage, extra_hours, hourly_wage_rates):
     return current_hour_rate
 
 
-def calculate_daily_salary(start_date, finish_date, shifts, hourly_wage_rates):
+def calculate_daily_salary(start_date, finish_date, shifts, hourly_wage_rates, base_wage):
     total_earnings = 0
 
     for shift in shifts:
@@ -168,7 +168,7 @@ def calculate_daily_salary(start_date, finish_date, shifts, hourly_wage_rates):
 
         if start_date <= shift_date < finish_date:
             print(start_date, " | ", shift.start, " | ", finish_date)
-            earnings = calculate_shift_earnings_regular_day(shift, hourly_wage_rates, 30)
+            earnings = calculate_shift_earnings_regular_day(shift, hourly_wage_rates, base_wage)
             total_earnings += earnings
 
     return total_earnings

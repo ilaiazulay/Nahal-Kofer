@@ -99,7 +99,7 @@ def calculate_salary():
             flash('Start of the shift can not be after or the same as the end of the shift', category='error')
 
         else:
-            salary = calculate_daily_salary(start_time, finish_time, current_user.shifts, hourly_wage_rates)
+            salary = calculate_daily_salary(start_time, finish_time, current_user.shifts, hourly_wage_rates, current_user.base_wage)
             print(salary)
             # return redirect(url_for('views.calculate_salary'))
 
