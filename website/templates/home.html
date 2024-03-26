@@ -2,47 +2,90 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <br />
-<h2>Shifts</h2>
+<h2>Home Page</h2>
 <br />
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Start Date & Time</th>
-        <th>Finish Date & Time</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for shift in user.shifts %}
-    <tr>
-        <td>{{ shift.start.strftime('%Y-%m-%d %H:%M') }}</td>
-        <td>{{ shift.finish.strftime('%Y-%m-%d %H:%M') }}</td>
-        <td>
-            <button type="button" class="close" onClick="confirmDelete({{ shift.id }})">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div id="weather-container">
+    <img id="weather-icon" alt="Weather Icon">
+    <div id="temp-div"></div>
+    <div id="weather-info"></div>
+    <div id="hourly-forecast"></div>
+    <div id="rain-forecast"></div>
+</div>
 
-<h2>Add Shifts</h2>
-<br />
-
-<form method="POST">
-
-    <label for="start_time">Starting Time:</label>
-    <input type="datetime-local" id="start_time" name="start_time" class="form-control" required><br>
-
-    <label for="finish_time">Finishing Time:</label>
-    <input type="datetime-local" id="finish_time" name="finish_time" class="form-control" required><br>
-
-    <br />
-
-    <div align="center">
-        <button type="submit" class="btn btn-primary" value="Submit">Add Shift</button>
+<div style="display: flex; justify-content: space-around;">
+    <div style="position: relative;">
+        <canvas id="phGauge" width="200" height="200"></canvas>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px;">
+            {{ ph_average }}
+        </div>
+        <div style="text-align: center;">pH Average</div>
     </div>
-</form>
+    <div style="position: relative;">
+        <canvas id="hardnessGauge" width="200" height="200"></canvas>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px;">
+            {{ hardness_average }}
+        </div>
+        <div style="text-align: center;">Hardness Average</div>
+    </div>
+    <div style="position: relative;">
+        <canvas id="tsGauge" width="200" height="200"></canvas>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px;">
+            {{ ts_average }}
+        </div>
+        <div style="text-align: center;">TS Average</div>
+    </div>
+</div>
+
+<div style="display: flex; justify-content: space-around; margin-top: 20px;">
+    <div>
+        <div style="width: 20px; height: 20px; background-color: #36A2EB; display: inline-block; margin-right: 5px;"></div>
+        PH Average
+        {% if last_two_ph_average %}
+          <p>Last two test average: {{ last_two_ph_average }}</p>
+          {% if (last_two_ph_average - ph_average) > 0 %} </p>
+          <p style="color: green;"> {{ last_two_ph_average - ph_average}} </p>
+          {% endif %}
+          {% if (last_two_ph_average - ph_average) < 0 %} </p>
+          <p style="color: red;"> {{ last_two_ph_average - ph_average}} </p>
+          {% endif %}
+        {% endif %}
+    </div>
+    <div>
+        <div style="width: 20px; height: 20px; background-color: #FFCE56; display: inline-block; margin-right: 5px;"></div>
+        Hardness Average
+        {% if last_two_hardness_average %}
+          <p>Last two test average: {{ last_two_hardness_average }}</p>
+          {% if (last_two_hardness_average - hardness_average) > 0 %} </p>
+          <p style="color: green;"> {{ last_two_hardness_average - hardness_average}} </p>
+          {% endif %}
+          {% if (last_two_hardness_average - hardness_average) < 0 %} </p>
+          <p style="color: red;"> {{ last_two_hardness_average - hardness_average}} </p>
+          {% endif %}
+        {% endif %}
+    </div>
+    <div>
+        <div style="width: 20px; height: 20px; background-color: #FF6384; display: inline-block; margin-right: 5px;"></div>
+        TS Average
+        {% if last_two_ts_average %}
+          <p>Last two test average: {{ last_two_ts_average }}</p>
+          {% if (last_two_ts_average - ts_average) > 0 %} </p>
+          <p style="color: green;"> {{ last_two_ts_average - ts_average}} </p>
+          {% endif %}
+          {% if (last_two_ts_average - ts_average) < 0 %} </p>
+          <p style="color: red;"> {{ last_two_ts_average - ts_average}} </p>
+          {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ph_average = {{ ph_average }};
+    const hardness_average = {{ hardness_average }}
+    const ts_average = {{ ts_average }}
+</script>
+<script src="{{ url_for('static', filename='home.js') }}"></script>
+
 {% endblock %}

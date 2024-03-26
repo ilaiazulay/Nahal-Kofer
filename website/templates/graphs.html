@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<br />
+<h2>Graphs</h2>
+
+<select id="options">
+  <option value="" disabled selected>Select an option</option>
+    <option value="ph">ph</option>
+    <option value="ph_2">ph 2</option>
+    <option value="ph_average">ph avg</option>
+    <option value="ntu">ntu</option>
+    <option value="ntu_2">ntu 2</option>
+    <option value="ave">ave</option>
+    <option value="hardness">hardness</option>
+    <option value="ts_mg">ts mg</option>
+    <option value="ts_mg_2">ts mg 2</option>
+    <option value="ave_ts">ave ts</option>
+    <option value="ts_smg">ts smg</option>
+    <option value="ts_smg2">ts smg2</option>
+    <option value="ave_tss">ave tss</option>
+    <option value="fs_smg">fs smg</option>
+    <option value="fs_smg_2">fs smg 2</option>
+    <option value="ave_fss">ave fss</option>
+    <option value="vs_smg">vs smg</option>
+    <option value="vs_smg_2">vs smg 2</option>
+    <option value="ave_vss">ave vss</option>
+    <option value="td_smg">td smg</option>
+    <option value="td_smg_2">td smg 2</option>
+    <option value="ave_tds">ave tds</option>
+    <option value="tp_mg">tp mg</option>
+    <option value="tp_mg_2">tp mg 2</option>
+    <option value="ave_tp">ave tp</option>
+    <option value="tn">tn</option>
+    <option value="tn_2">tn 2</option>
+    <option value="ave_tn">ave tn</option>
+    <option value="cod">cod</option>
+    <option value="cod_2">cod 2</option>
+    <option value="ave_cod">ave cod</option>
+    <option value="nh4">nh4</option>
+    <option value="nh4_2">nh4 2</option>
+    <option value="ave_nh4">ave nh4</option>
+    <option value="po4p">po4p</option>
+    <option value="po4p_2">po4p 2</option>
+    <option value="ave_po4">ave po4</option>
+    <option value="no2">no2</option>
+    <option value="no2 2">no2 2</option>
+    <option value="ave_no2">ave no2</option>
+    <option value="no3">no3</option>
+    <option value="no3_2">no3 2</option>
+    <option value="ave_no3">ave no3</option>
+    <option value="bod">bod</option>
+    <option value="bod_2">bod 2</option>
+</select>
+
+<canvas id="graph"></canvas>
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<!-- JavaScript to handle the selection and render the graph -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
+<script src="{{ url_for('static', filename='graphs.js') }}"></script>
+
+{% endblock %}

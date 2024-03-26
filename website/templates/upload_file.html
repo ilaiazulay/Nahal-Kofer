@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<br />
+<h2>Upload Test File</h2>
+<br />
+
+<form method="POST" enctype="multipart/form-data">
+
+    <label for="excel_file">Upload Excel File:</label>
+    <input type="file" id="excel_file" name="excel_file" accept=".xlsx" required><br>
+
+    <br />
+
+    <div align="center">
+        <button type="submit" class="btn btn-primary" value="Submit">Upload File</button>
+    </div>
+</form>
+<br>
+
+{% if response_status == 400 %}
+    <div class="alert alert-danger" role="alert">
+        {{ response.message }}
+    </div>
+{% elif response_status == 200 %}
+    <div class="alert alert-success" role="alert">
+        {{ response.message }}
+    </div>
+{% endif %}
+
+{% endblock %}

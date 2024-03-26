@@ -1,0 +1,150 @@
+{% extends "base.html" %} {$ block title %}Home{ %endblock% }
+{% block content %}
+<br />
+<h2>Lab Tests</h2>
+<br />
+
+<form method="POST">
+
+  <label for="start_time">From:</label>
+  <input type="date" id="start_time" name="start_time" class="form-control" value="{{ request.form.get('start_time') }}" required><br>
+
+  <label for="finish_time">To:</label>
+  <input type="date" id="finish_time" name="finish_time" class="form-control" value="{{ request.form.get('finish_time') }}" required><br>
+
+  <br />
+
+  <div align="center">
+    <button type="submit" class="btn btn-primary" value="Submit">Apply</button>
+  </div>
+</form>
+<br>
+
+{% if start_time is not none and finish_time is not none %}
+<table class="table">
+  <thead>
+  <tr>
+    <th>Sample Date</th>
+    <th>Analysis Date</th>
+    <th>ph</th>
+    <th>ph 2</th>
+    <th>ph avg</th>
+    <th>ntu</th>
+    <th>ntu 2</th>
+    <th>ave</th>
+    <th>hardness</th>
+    <th>ts mg</th>
+    <th>ts mg 2</th>
+    <th>ave ts</th>
+    <th>ts smg</th>
+    <th>ts smg2</th>
+    <th>ave tss</th>
+    <th>fs smg</th>
+    <th>fs smg 2</th>
+    <th>ave fss</th>
+    <th>vs smg</th>
+    <th>vs smg 2</th>
+    <th>ave vss</th>
+    <th>td smg</th>
+    <th>td smg</th>
+    <th>ave tds</th>
+    <th>tp mg</th>
+    <th>tp mg 2</th>
+    <th>ave tp</th>
+    <th>tn</th>
+    <th>tn 2</th>
+    <th>ave tn</th>
+    <th>tp mg 2</th>
+    <th>tn</th>
+    <th>tn 2</th>
+    <th>ave tn</th>
+    <th>cod</th>
+    <th>cod 2</th>
+    <th>ave cod</th>
+    <th>nh4</th>
+    <th>nh4 2</th>
+    <th>ave nh4</th>
+    <th>po4p</th>
+    <th>po4p 2</th>
+    <th>ave po4</th>
+    <th>no2</th>
+    <th>no2 2</th>
+    <th>ave no2</th>
+    <th>no3</th>
+    <th>no3 2</th>
+    <th>ave no3</th>
+    <th>bod</th>
+    <th>bod 2</th>
+  </tr>
+  </thead>
+<tbody>
+  {% for lab_test in lab_tests %}
+    {% if lab_test.sample_date >= start_time and lab_test.sample_date <= finish_time %}
+      <tr>
+        <td>{{ lab_test.sample_date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ lab_test.analysis_date }}</td>
+        <td>{{ lab_test.ph }}</td>
+        <td>{{ lab_test.ph }}</td>
+        <td>{{ lab_test.ph_2 }}</td>
+        <td>{{ lab_test.ph_2 }}</td>
+        <td>{{ lab_test.ph_avg }}</td>
+        <td>{{ lab_test.ntu }}</td>
+        <td>{{ lab_test.ntu_2 }}</td>
+        <td>{{ lab_test.ave }}</td>
+        <td>{{ lab_test.hardness }}</td>
+        <td>{{ lab_test.ts_mg }}</td>
+        <td>{{ lab_test.ts_mg_2 }}</td>
+        <td>{{ lab_test.ave_ts }}</td>
+        <td>{{ lab_test.ts_smg }}</td>
+        <td>{{ lab_test.ts_smg_2 }}</td>
+        <td>{{ lab_test.ave_tss }}</td>
+        <td>{{ lab_test.fs_smg }}</td>
+        <td>{{ lab_test.fs_smg_2 }}</td>
+        <td>{{ lab_test.ave_fss }}</td>
+        <td>{{ lab_test.vs_smg }}</td>
+        <td>{{ lab_test.vs_smg_2 }}</td>
+        <td>{{ lab_test.ave_vss }}</td>
+        <td>{{ lab_test.td_smg }}</td>
+        <td>{{ lab_test.ave_tds }}</td>
+        <td>{{ lab_test.tp_mg }}</td>
+        <td>{{ lab_test.tp_mg_2 }}</td>
+        <td>{{ lab_test.ave_tp }}</td>
+        <td>{{ lab_test.tn }}</td>
+        <td>{{ lab_test.tn_2 }}</td>
+        <td>{{ lab_test.ave_tn }}</td>
+        <td>{{ lab_test.tp_mg_2 }}</td>
+        <td>{{ lab_test.tn }}</td>
+        <td>{{ lab_test.tn_2 }}</td>
+        <td>{{ lab_test.ave_tn }}</td>
+        <td>{{ lab_test.cod }}</td>
+        <td>{{ lab_test.cod_2 }}</td>
+        <td>{{ lab_test.ave_cod }}</td>
+        <td>{{ lab_test.nh4 }}</td>
+        <td>{{ lab_test.nh4_2 }}</td>
+        <td>{{ lab_test.ave_nh4 }}</td>
+        <td>{{ lab_test.po4p }}</td>
+        <td>{{ lab_test.po4p_2 }}</td>
+        <td>{{ lab_test.ave_po4 }}</td>
+        <td>{{ lab_test.no2 }}</td>
+        <td>{{ lab_test.no2_2 }}</td>
+        <td>{{ lab_test.ave_no2 }}</td>
+        <td>{{ lab_test.no3 }}</td>
+        <td>{{ lab_test.no3_2 }}</td>
+        <td>{{ lab_test.ave_no3 }}</td>
+        <td>{{ lab_test.bod }}</td>
+        <td>{{ lab_test.bod_2 }}</td>
+      </tr>
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+</tbody>
+</table>
+<div class="arrow-buttons">
+  <button class="prev-btn">&lt;</button>
+  <button class="next-btn">&gt;</button>
+</div>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<script src="{{ url_for('static', filename='lab_tests.js') }}"></script>
+
+
+{% endblock %}
