@@ -7,6 +7,8 @@ from flask_login import LoginManager
 from dotenv import load_dotenv
 from flask_migrate import Migrate
 
+from website.mqtt_client import stop_mqtt
+
 load_dotenv()
 
 db = SQLAlchemy()
@@ -14,6 +16,12 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
+    #
+    # @app.teardown_appcontext
+    # def stop_mqtt_client(exception=None):
+    #     # Stop the MQTT client when the app shuts down
+    #     stop_mqtt()
+
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     # app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.getenv("DB_NAME")}'
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
