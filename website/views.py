@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import func, desc
-
+from website.mqtt_client import get_sensor_reading
 import numpy as np
 from scipy.stats import pearsonr
 from . import db
@@ -207,4 +207,19 @@ def get_correlation_data():
     print(correlation)
 
     return jsonify(correlation=correlation)
+
+
+@views.route('/sensor')
+@login_required
+def sensor():
+    current_reading = get_sensor_reading()
+    print(current_reading)
+    return render_template('sensor.html', user=current_user, distance=current_reading)
+
+
+@views.route('/get_sensor_data')
+def get_sensor_data():
+    current_reading = get_sensor_reading()
+    print(current_reading)
+    return jsonify({'distance': current_reading})
 
