@@ -1,0 +1,248 @@
+{% extends "base.html" %} {$ block title %}Add Test Result{ %endblock% }
+{% block content %}
+
+<form method="POST">
+    <br>
+    <h3 align="center">Add Test Result</h3>
+
+    <div class="form-group">
+        <label for="sampleDate">Sample Date:</label>
+        <input type="date" class="form-control" id="sampleDate" name="sampleDate" required>
+    </div>
+
+    <div class="form-group">
+        <label for="analysisDate">Analysis Date:</label>
+        <input type="date" class="form-control" id="analysisDate" name="analysisDate">
+    </div>
+
+    <div class="form-group">
+        <label for="ph">ph:</label>
+        <input type="number" class="form-control" id="ph" name="ph">
+    </div>
+
+    <div class="form-group">
+        <label for="ph2">ph 2:</label>
+        <input type="number" class="form-control" id="ph2" name="ph2">
+    </div>
+
+    <div class="form-group">
+        <label for="phAvg">ph avg:</label>
+        <input type="number" class="form-control" id="phAvg" name="phAvg">
+    </div>
+
+    <div class="form-group">
+        <label for="ntu">ntu:</label>
+        <input type="number" class="form-control" id="ntu" name="ntu">
+    </div>
+
+    <div class="form-group">
+        <label for="ntu2">ntu 2:</label>
+        <input type="number" class="form-control" id="ntu2" name="ntu2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveNtu">ave:</label>
+        <input type="number" class="form-control" id="aveNtu" name="aveNtu">
+    </div>
+
+    <div class="form-group">
+        <label for="hardness">hardness:</label>
+        <input type="number" class="form-control" id="hardness" name="hardness">
+    </div>
+
+    <div class="form-group">
+        <label for="tsMg">ts mg:</label>
+        <input type="number" class="form-control" id="tsMg" name="tsMg">
+    </div>
+
+    <div class="form-group">
+        <label for="tsMg2">ts mg 2:</label>
+        <input type="number" class="form-control" id="tsMg2" name="tsMg2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveTs">ave ts:</label>
+        <input type="number" class="form-control" id="aveTs" name="aveTs">
+    </div>
+
+    <div class="form-group">
+        <label for="tsSmg">ts smg:</label>
+        <input type="number" class="form-control" id="tsSmg" name="tsSmg">
+    </div>
+
+    <div class="form-group">
+        <label for="tsSmg2">ts smg2:</label>
+        <input type="number" class="form-control" id="tsSmg2" name="tsSmg2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveTss">ave tss:</label>
+        <input type="number" class="form-control" id="aveTss" name="aveTss">
+    </div>
+
+    <div class="form-group">
+        <label for="fsSmg">fs smg:</label>
+        <input type="number" class="form-control" id="fsSmg" name="fsSmg">
+    </div>
+
+    <div class="form-group">
+        <label for="fsSmg2">fs smg 2:</label>
+        <input type="number" class="form-control" id="fsSmg2" name="fsSmg2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveFss">ave fss:</label>
+        <input type="number" class="form-control" id="aveFss" name="aveFss">
+    </div>
+
+    <div class="form-group">
+        <label for="vsSmg">vs smg:</label>
+        <input type="number" class="form-control" id="vsSmg" name="vsSmg">
+    </div>
+
+    <div class="form-group">
+        <label for="vsSmg2">vs smg 2:</label>
+        <input type="number" class="form-control" id="vsSmg2" name="vsSmg2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveVss">ave vss:</label>
+        <input type="number" class="form-control" id="aveVss" name="aveVss">
+    </div>
+
+    <div class="form-group">
+        <label for="tdSmg">td smg:</label>
+        <input type="number" class="form-control" id="tdSmg" name="tdSmg">
+    </div>
+
+    <div class="form-group">
+        <label for="tdSmg2">td smg 2:</label>
+        <input type="number" class="form-control" id="tdSmg2" name="tdSmg2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveTds">ave tds:</label>
+        <input type="number" class="form-control" id="aveTds" name="aveTds">
+    </div>
+
+    <div class="form-group">
+        <label for="tpMg">tp mg:</label>
+        <input type="number" class="form-control" id="tpMg" name="tpMg">
+    </div>
+
+    <div class="form-group">
+        <label for="tpMg2">tp mg 2:</label>
+        <input type="number" class="form-control" id="tpMg2" name="tpMg2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveTp">ave tp:</label>
+        <input type="number" class="form-control" id="aveTp" name="aveTp">
+    </div>
+
+    <div class="form-group">
+        <label for="tn">tn:</label>
+        <input type="number" class="form-control" id="tn" name="tn">
+    </div>
+
+    <div class="form-group">
+        <label for="tn2">tn 2:</label>
+        <input type="number" class="form-control" id="tn2" name="tn2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveTn">ave tn:</label>
+        <input type="number" class="form-control" id="aveTn" name="aveTn">
+    </div>
+
+    <div class="form-group">
+        <label for="cod">cod:</label>
+        <input type="number" class="form-control" id="cod" name="cod">
+    </div>
+
+    <div class="form-group">
+        <label for="cod2">cod 2:</label>
+        <input type="number" class="form-control" id="cod2" name="cod2">
+    </div>
+
+    <div class="form-group">
+        <label for="aveCod">ave cod:</label>
+        <input type="number" class="form-control" id="aveCod" name="aveCod">
+    </div>
+
+    <div class="form-group">
+        <label for="nh4">nh4:</label>
+        <input type="number" class="form-control" id="nh4" name="nh4">
+    </div>
+
+    <div class="form-group">
+        <label for="nh42">nh4 2:</label>
+        <input type="number" class="form-control" id="nh42" name="nh42">
+    </div>
+
+    <div class="form-group">
+        <label for="aveNh4">ave nh4:</label>
+        <input type="number" class="form-control" id="aveNh4" name="aveNh4">
+    </div>
+
+    <div class="form-group">
+        <label for="po4p">po4p:</label>
+        <input type="number" class="form-control" id="po4p" name="po4p">
+    </div>
+
+    <div class="form-group">
+        <label for="po4p2">po4p 2:</label>
+        <input type="number" class="form-control" id="po4p2" name="po4p2">
+    </div>
+
+    <div class="form-group">
+        <label for="avePo4">ave po4:</label>
+        <input type="number" class="form-control" id="avePo4" name="avePo4">
+    </div>
+
+    <div class="form-group">
+        <label for="no2">no2:</label>
+        <input type="number" class="form-control" id="no2" name="no2">
+    </div>
+
+    <div class="form-group">
+        <label for="no22">no2 2:</label>
+        <input type="number" class="form-control" id="no22" name="no22">
+    </div>
+
+    <div class="form-group">
+        <label for="aveNo2">ave no2:</label>
+        <input type="number" class="form-control" id="aveNo2" name="aveNo2">
+    </div>
+
+    <div class="form-group">
+        <label for="no3">no3:</label>
+        <input type="number" class="form-control" id="no3" name="no3">
+    </div>
+
+    <div class="form-group">
+        <label for="no32">no3 2:</label>
+        <input type="number" class="form-control" id="no32" name="no32">
+    </div>
+
+    <div class="form-group">
+        <label for="aveNo3">ave no3:</label>
+        <input type="number" class="form-control" id="aveNo3" name="aveNo3">
+    </div>
+
+    <div class="form-group">
+        <label for="bod">bod:</label>
+        <input type="number" class="form-control" id="bod" name="bod">
+    </div>
+
+    <div class="form-group">
+        <label for="bod2">bod 2:</label>
+        <input type="number" class="form-control" id="bod2" name="bod2">
+    </div>
+    <br>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+<br>
+
+{% endblock %}

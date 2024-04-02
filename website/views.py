@@ -223,3 +223,9 @@ def get_sensor_data():
     print(current_reading)
     return jsonify({'distance': current_reading})
 
+
+@views.route('/submit_test')
+@login_required
+def add_test():
+    return render_template('submit_test.html', user=current_user)
+
