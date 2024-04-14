@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<br />
+<h2>QR Code</h2>
+<body>
+{% if img_data %}
+<img src="data:image/png;base64,{{ img_data }}" alt="QR Code">
+{% endif %}
+</body>
+</html>
+
+{% endblock %}

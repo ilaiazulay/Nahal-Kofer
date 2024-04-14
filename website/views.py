@@ -1,3 +1,7 @@
+import base64
+from io import BytesIO
+
+import qrcode
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import func, desc
@@ -8,7 +12,9 @@ from . import db
 from datetime import datetime, time
 import json
 from excel_handler import validate_excel_file, extract_excel_file
-from .models import LabTest
+from .models import LabTest, QRCode
+from .QR_code_functions import generate_qr_code
+
 
 views = Blueprint('views', __name__)
 
@@ -231,6 +237,27 @@ def get_sensor_data():
 @login_required
 def add_test():
     if current_user.category == 'Lab':
+
+        code = request.args.get('code')
+        name = request.args.get('name')
+        qr_created_time = request.args.get('qr_created_time')
+        qr_created_date = datetime.strptime(qr_created_time, "%Y-%m-%dT%H:%M:%S.%f").date()
+        latitude = request.args.get('lat')
+        longitude = request.args.get('lon')
+
+        qr_record = QRCode.query.filter_by(code=code).first()
+        if qr_record:
+            qr_record = True  # The QR code exists
+        else:
+            qr_record = False  # No QR code found with that code
+
+        if request.method == 'GET':
+            qr_record = QRCode.query.filter_by(code=code).first()
+            if qr_record and qr_record.used is False:
+                location = str(latitude) + "," + str(longitude)
+                print(location, qr_created_time)
+                return render_template('submit_test.html', date=qr_created_date, location=location, name=current_user.first_name, user=current_user)
+
         if request.method == 'POST':
             # Extract form data
             sample_date = request.form.get('sampleDate')
@@ -280,7 +307,6 @@ def add_test():
             ave_no3 = request.form.get('aveNo3', None)
             bod = request.form.get('bod', None)
             bod2 = request.form.get('bod2', None)
-            # Add other fields similarly
 
             # Create a new LabTest object
             lab_test = LabTest(
@@ -337,7 +363,41 @@ def add_test():
             # Save the LabTest object to the database
             db.session.add(lab_test)
             db.session.commit()
+
+            qr_record.used = True
+            db.session.commit()
         return render_template('submit_test.html', user=current_user)
     else:
         return render_template('home.html', user=current_user)
+
+
+@views.route('/display_qr', methods=['POST', 'GET'])
+def display_qr():
+    if request.method == 'POST':
+        if current_user.category != 'Lab':
+            flash("Unauthorized access.", "error")
+            return redirect(url_for('home.html'))
+
+        latitude = request.form.get('lat')
+        longitude = request.form.get('lon')
+        if not latitude or not longitude:
+            flash("Latitude or longitude not provided.", "error")
+            return render_template('generate_qr_code.html')
+
+        # Assuming generate_qr_code returns a base64-encoded QR code image
+        img_data = generate_qr_code(latitude, longitude, current_user.first_name)
+        return render_template('display_qr.html', user=current_user, img_data=img_data)
+
+    # Handle GET request if necessary
+    return render_template('display_qr.html')
+
+
+@views.route('/generate_qr_code')
+def get_qr_code():
+    if current_user.category == 'Lab':
+        print()
+        return render_template('generate_qr_code.html', user=current_user)
+    else:
+        return render_template('home.html', user=current_user)
+
 
