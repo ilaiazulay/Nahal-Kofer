@@ -9,10 +9,10 @@ from website.mqtt_client import get_sensor_reading
 import numpy as np
 from scipy.stats import pearsonr
 from . import db
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import json
 from excel_handler import validate_excel_file, extract_excel_file
-from .models import LabTest, QRCode
+from .models import LabTest, QRCode, Prediction
 from .QR_code_functions import generate_qr_code
 
 
@@ -45,9 +45,33 @@ def home():
     last_two_hardness_average = sum(last_two_hardness_values) / len(last_two_hardness_values) if last_two_hardness_values else 0
     last_two_ts_average = sum(last_two_ts_values) / len(last_two_ts_values) if last_two_ts_values else 0
 
+    current_reading = float(get_sensor_reading())
+    flood_alert = ""
+    if current_reading <= 27:
+        flood_alert = "Water levels are high!"
+    today = datetime.utcnow()
+    future_date = today + timedelta(days=5)
+
+    # Query for any flood predictions within the next 5 days
+    flood_prediction = Prediction.query.filter(
+        Prediction.date >= today,
+        Prediction.date <= future_date,
+        Prediction.prediction == True
+    ).first()  # Get the first result if exists
+
+    if flood_prediction:
+        print(f"Flood predicted on {flood_prediction.date.strftime('%Y-%m-%d')}")
+        flood_prediction_alert = f"Flood alert for {flood_prediction.date.strftime('%Y-%m-%d')}!"
+        color = 'red'
+    else:
+        print("No flood predicted in the next 5 days.")
+        flood_prediction_alert = "No flood alert for the upcoming week."
+        color = 'green'
+
     return render_template("home.html", user=current_user, ph_average=ph_average, hardness_average=hardness_average,
                            ts_average=ts_average, last_two_ph_average=last_two_ph_average,
-                           last_two_hardness_average=last_two_hardness_average, last_two_ts_average=last_two_ts_average)
+                           last_two_hardness_average=last_two_hardness_average, last_two_ts_average=last_two_ts_average,
+                           distance=current_reading, flood_alert=flood_alert, flood_prediction_alert=flood_prediction_alert, color=color)
 
 
 @views.route('/upload_file', methods=['GET', 'POST'])
@@ -177,60 +201,68 @@ def get_correlation_graph_data():
 
     lab_tests1 = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option1)).all()
     lab_tests2 = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option2)).all()
-    print(lab_tests1)
-
-    # Extracting data for labels and values
-    labels = [str(sample) for sample, value in lab_tests1]  # Use sample directly as label
-    values1 = [value for sample, value in lab_tests1]
-    values2 = [value for sample, value in lab_tests2]
-
-    return jsonify(labels=labels, values1=values1, values2=values2)
-
-
-@views.route('/get_correlation_data', methods=['POST'])
-@login_required
-def get_correlation_data():
-    option1 = request.json.get('option1')
-    option2 = request.json.get('option2')
-
-    lab_tests1 = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option1)).all()
-    lab_tests2 = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option2)).all()
 
     # Extracting data for labels and values
     labels = [str(sample) for sample, _ in lab_tests1]  # Use sample directly as label
-    values1 = np.array([value for _, value in lab_tests1], dtype=float)
-    values2 = np.array([value for _, value in lab_tests2], dtype=float)
+    values1 = np.array([value if value is not None else np.nan for _, value in lab_tests1], dtype=float)
+    values2 = np.array([value if value is not None else np.nan for _, value in lab_tests2], dtype=float)
 
-    # Remove NaN and inf values from both arrays
+    # Filter out indices where either array has NaN or inf values
     valid_indices = ~(np.isnan(values1) | np.isnan(values2) | np.isinf(values1) | np.isinf(values2))
-    values1 = values1[valid_indices]
-    values2 = values2[valid_indices]
+    values1_clean = values1[valid_indices]
+    values2_clean = values2[valid_indices]
 
     # Calculate correlation
-    correlation = np.nan  # Default value for correlation in case calculation fails
-    if len(values1) > 1 and len(values2) > 1:
-        correlation, _ = pearsonr(values1, values2)
-        if np.isnan(correlation):
-            correlation = None  # Replace NaN with a default value
+    if len(values1_clean) > 1 and len(values2_clean) > 1:
+        correlation, _ = pearsonr(values1_clean, values2_clean)
+        correlation_message = f"Correlation: {correlation:.2f}"
+    else:
+        correlation_message = "Not enough data for correlation."
 
-    print(correlation)
+    print(correlation_message)
 
-    return jsonify(correlation=correlation)
+    # Convert cleaned data back to lists for JSON response
+    labels_clean = [labels[i] for i in np.where(valid_indices)[0]]
+    values1_clean = values1_clean.tolist()
+    values2_clean = values2_clean.tolist()
+
+    return jsonify(labels=labels_clean, values1=values1_clean, values2=values2_clean, correlation=correlation_message)
 
 
 @views.route('/sensor')
 @login_required
 def sensor():
-    current_reading = get_sensor_reading()
-    print(current_reading)
-    return render_template('sensor.html', user=current_user, distance=current_reading)
+    current_reading = float(get_sensor_reading())
+    flood_alert = ""
+    if current_reading <= 27:
+        flood_alert = "Water levels are high!"
+    today = datetime.utcnow()
+    future_date = today + timedelta(days=5)
+
+    # Query for any flood predictions within the next 5 days
+    flood_prediction = Prediction.query.filter(
+        Prediction.date >= today,
+        Prediction.date <= future_date,
+        Prediction.prediction == True
+    ).first()  # Get the first result if exists
+
+    if flood_prediction:
+        print(f"Flood predicted on {flood_prediction.date.strftime('%Y-%m-%d')}")
+        flood_prediction_alert = f"Flood alert for {flood_prediction.date.strftime('%Y-%m-%d')}!"
+        color = 'red'
+    else:
+        print("No flood predicted in the next 5 days.")
+        flood_prediction_alert = "No flood alert for the upcoming week."
+        color = 'green'
+
+    return render_template('sensor.html', user=current_user, distance=current_reading, flood_alert=flood_alert, flood_prediction_alert=flood_prediction_alert, color=color)
 
 
 @views.route('/get_sensor_data')
 def get_sensor_data():
     current_reading = get_sensor_reading()
     print(current_reading)
-    return jsonify({'distance': current_reading})
+    return current_reading
 
 
 @views.route('/submit_test', methods=['GET', 'POST'])
@@ -241,15 +273,15 @@ def add_test():
         code = request.args.get('code')
         name = request.args.get('name')
         qr_created_time = request.args.get('qr_created_time')
-        qr_created_date = datetime.strptime(qr_created_time, "%Y-%m-%dT%H:%M:%S.%f").date()
         latitude = request.args.get('lat')
         longitude = request.args.get('lon')
+        qr_record = False  # No QR code found with that code
 
-        qr_record = QRCode.query.filter_by(code=code).first()
-        if qr_record:
-            qr_record = True  # The QR code exists
-        else:
-            qr_record = False  # No QR code found with that code
+        if code and name and qr_created_time and latitude and longitude:
+            qr_created_date = datetime.strptime(qr_created_time, "%Y-%m-%dT%H:%M:%S.%f").date()
+            qr_record = QRCode.query.filter_by(code=code).first()
+            if qr_record:
+                qr_record = True  # The QR code exists
 
         if request.method == 'GET':
             qr_record = QRCode.query.filter_by(code=code).first()

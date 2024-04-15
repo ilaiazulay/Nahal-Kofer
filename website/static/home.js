@@ -208,3 +208,16 @@ function showImage() {
     const weatherIcon = document.getElementById('weather-icon');
     weatherIcon.style.display = 'block'; // Make the image visible once it's loaded
 }
+
+async function updateSensorData() {
+    try {
+        const response = await fetch('/get_sensor_data');
+        console.log(response);
+        const data = await response.json();
+        document.getElementById('reading').innerHTML = data.distance + ' cm';
+    } catch (error) {
+        console.error('Error fetching sensor data:', error);
+    }
+}
+
+setInterval(updateSensorData, 1000);  // Update every second

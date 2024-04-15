@@ -22,31 +22,55 @@ fetch('/get_graph_data', {
 
 // Function to render the graph
 function renderGraph(data) {
-  var ctx = document.getElementById('graph').getContext('2d');
+    var ctx = document.getElementById('graph').getContext('2d');
 
-  // Destroy existing Chart instance if it exists
-  if (window.myChart) {
-    window.myChart.destroy();
-  }
-
-  window.myChart = new Chart(ctx, {
-    type: 'line', // Change the chart type as needed (e.g., 'bar', 'pie', etc.)
-    data: {
-      labels: data.labels,
-      datasets: [{
-        label: document.getElementById("options").value,
-        data: data.values,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)', // Example background color
-        borderColor: 'rgba(54, 162, 235, 1)', // Example border color
-        borderWidth: 1 // Example border width
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
+    // Destroy existing Chart instance if it exists
+    if (window.myChart) {
+        window.myChart.destroy();
     }
-  });
+
+    window.myChart = new Chart(ctx, {
+        type: 'line', // Or 'bar' or any other type
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'NTU Levels',
+                data: data.values,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true, // Enable zooming with mouse wheel
+                        },
+                        pinch: {
+                            enabled: true // Enable zooming with pinch gesture
+                        },
+                        mode: 'x' // Allow zooming in the x direction
+                    },
+                    pan: {
+                        enabled: true, // Enable panning
+                        mode: 'x' // Allow panning in the x direction
+                    }
+                }
+            }
+        }
+    });
 }
+

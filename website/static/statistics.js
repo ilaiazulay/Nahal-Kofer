@@ -18,6 +18,7 @@ document.getElementById("options1").addEventListener("change", function() {
     .then(data => {
       console.log("Graph data:", data);
       renderGraph(data, selectedOption2);
+      document.getElementById("correlationValue").innerText = data.correlation; // Display the correlation value
     })
     .catch(error => {
       console.error('Error fetching graph data:', error);

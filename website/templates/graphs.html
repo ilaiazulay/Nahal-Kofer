@@ -58,7 +58,16 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <!-- JavaScript to handle the selection and render the graph -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Include Date-fns library for Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/date-fns@2.16.1/dist/date-fns.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<!-- Include Chart.js Zoom Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
+
 <script src="{{ url_for('static', filename='graphs.js') }}"></script>
 
 {% endblock %}
