@@ -212,9 +212,19 @@ function showImage() {
 async function updateSensorData() {
     try {
         const response = await fetch('/get_sensor_data');
-        console.log(response);
         const data = await response.json();
-        document.getElementById('reading').innerHTML = data.distance + ' cm';
+        if(data.distance != undefined)
+            document.getElementById('reading').innerHTML = data.distance + ' cm';
+        else
+            document.getElementById('reading').innerHTML = 'Lost Connection';
+        const floodAlertElement = document.getElementById('floodAlert');
+        console.log(data);
+
+        if(data.distance <= 27) {
+            floodAlertElement.style.display = 'block'; // Show flood alert
+        } else {
+            floodAlertElement.style.display = 'none'; // Hide flood alert
+        }
     } catch (error) {
         console.error('Error fetching sensor data:', error);
     }

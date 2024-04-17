@@ -12,6 +12,15 @@
   display: none;
 }
 
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+
+.blink {
+  color: red;
+  animation: blinker 1s linear infinite;
+}
+
 /* Add styling to the container to make it look like a scrollbar */
 #weather-container {
   color: #fff;

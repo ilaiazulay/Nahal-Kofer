@@ -45,10 +45,13 @@ def home():
     last_two_hardness_average = sum(last_two_hardness_values) / len(last_two_hardness_values) if last_two_hardness_values else 0
     last_two_ts_average = sum(last_two_ts_values) / len(last_two_ts_values) if last_two_ts_values else 0
 
-    current_reading = float(get_sensor_reading())
-    flood_alert = ""
-    if current_reading <= 27:
-        flood_alert = "Water levels are high!"
+    current_reading = get_sensor_reading()
+    current_reading = json.loads(current_reading)
+    if not current_reading:
+        current_reading = 0
+    else:
+        current_reading = int(current_reading["distance"])
+    print(get_sensor_reading())
     today = datetime.utcnow()
     future_date = today + timedelta(days=5)
 
@@ -71,7 +74,7 @@ def home():
     return render_template("home.html", user=current_user, ph_average=ph_average, hardness_average=hardness_average,
                            ts_average=ts_average, last_two_ph_average=last_two_ph_average,
                            last_two_hardness_average=last_two_hardness_average, last_two_ts_average=last_two_ts_average,
-                           distance=current_reading, flood_alert=flood_alert, flood_prediction_alert=flood_prediction_alert, color=color)
+                           distance=current_reading, flood_prediction_alert=flood_prediction_alert, color=color)
 
 
 @views.route('/upload_file', methods=['GET', 'POST'])
@@ -232,7 +235,9 @@ def get_correlation_graph_data():
 @views.route('/sensor')
 @login_required
 def sensor():
-    current_reading = float(get_sensor_reading())
+    current_reading = get_sensor_reading()
+    current_reading = json.loads(current_reading)
+    current_reading = int(current_reading["distance"])
     flood_alert = ""
     if current_reading <= 27:
         flood_alert = "Water levels are high!"
@@ -275,13 +280,13 @@ def add_test():
         qr_created_time = request.args.get('qr_created_time')
         latitude = request.args.get('lat')
         longitude = request.args.get('lon')
-        qr_record = False  # No QR code found with that code
+        qr_exists = False  # No QR code found with that code
 
         if code and name and qr_created_time and latitude and longitude:
             qr_created_date = datetime.strptime(qr_created_time, "%Y-%m-%dT%H:%M:%S.%f").date()
             qr_record = QRCode.query.filter_by(code=code).first()
             if qr_record:
-                qr_record = True  # The QR code exists
+                qr_exists = True  # The QR code exists
 
         if request.method == 'GET':
             qr_record = QRCode.query.filter_by(code=code).first()
@@ -289,11 +294,21 @@ def add_test():
                 location = str(latitude) + "," + str(longitude)
                 print(location, qr_created_time)
                 return render_template('submit_test.html', date=qr_created_date, location=location, name=current_user.first_name, user=current_user)
+            if qr_record and qr_record.used:
+                return redirect(url_for('views.home'))
 
         if request.method == 'POST':
             # Extract form data
+            date_format = "%Y-%m-%d"
             sample_date = request.form.get('sampleDate')
+            sample_date = datetime.strptime(sample_date, date_format)
+            print(type(sample_date))
             analysis_date = request.form.get('analysisDate', None)
+            if analysis_date is None:
+                # If analysis date is not provided, use the current date
+                analysis_date = datetime.now().strftime('%Y-%m-%d')
+            else:
+                analysis_date = datetime.strptime(analysis_date, date_format)
             ph = request.form.get('ph', None)
             ph2 = request.form.get('ph2', None)
             ph_avg = request.form.get('phAvg', None)
@@ -338,54 +353,62 @@ def add_test():
             no32 = request.form.get('no32', None)
             ave_no3 = request.form.get('aveNo3', None)
             bod = request.form.get('bod', None)
+            if bod:
+                bod = True
+            else:
+                bod = False
             bod2 = request.form.get('bod2', None)
+            if bod2:
+                bod2 = True
+            else:
+                bod2 = False
 
             # Create a new LabTest object
             lab_test = LabTest(
                 sample_date=sample_date,
                 analysis_date=analysis_date,
                 ph=ph,
-                ph2=ph2,
-                ph_avg=ph_avg,
+                ph_2=ph2,
+                ph_average=ph_avg,
                 ntu=ntu,
-                ntu2=ntu2,
-                ave_ntu=ave_ntu,
+                ntu_2=ntu2,
+                ave=ave_ntu,
                 hardness=hardness,
                 ts_mg=ts_mg,
-                ts_mg2=ts_mg2,
+                ts_mg_2=ts_mg2,
                 ave_ts=ave_ts,
                 ts_smg=ts_smg,
-                ts_smg2=ts_smg2,
+                ts_smg_2=ts_smg2,
                 ave_tss=ave_tss,
                 fs_smg=fs_smg,
-                fs_smg2=fs_smg2,
+                fs_smg_2=fs_smg2,
                 ave_fss=ave_fss,
                 vs_smg=vs_smg,
-                vs_smg2=vs_smg2,
+                vs_smg_2=vs_smg2,
                 ave_vss=ave_vss,
                 td_smg=td_smg,
-                td_smg2=td_smg2,
+                td_smg_2=td_smg2,
                 ave_tds=ave_tds,
                 tp_mg=tp_mg,
-                tp_mg2=tp_mg2,
+                tp_mg_2=tp_mg2,
                 ave_tp=ave_tp,
                 tn=tn,
-                tn2=tn2,
+                tn_2=tn2,
                 ave_tn=ave_tn,
                 cod=cod,
-                cod2=cod2,
+                cod_2=cod2,
                 ave_cod=ave_cod,
                 nh4=nh4,
-                nh42=nh42,
+                nh4_2=nh42,
                 ave_nh4=ave_nh4,
                 po4p=po4p,
-                po4p2=po4p2,
+                po4p_2=po4p2,
                 ave_po4=ave_po4,
                 no2=no2,
-                no22=no22,
+                no2_2=no22,
                 ave_no2=ave_no2,
                 no3=no3,
-                no32=no32,
+                no3_2=no32,
                 ave_no3=ave_no3,
                 bod=bod,
                 bod2=bod2,

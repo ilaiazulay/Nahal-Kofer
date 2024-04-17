@@ -6,22 +6,8 @@
 <br />
 
 <h2>Distance from Max water level: <span id="reading">{{ distance }} cm</span></h2>
-<br>
-{% if flood_alert or flood_alert == "" %}
-<style>
-@keyframes blinker {
-  50% { opacity: 0; }
-}
-.blink {
-  color: red;
-  animation: blinker 1s linear infinite;
-}
-</style>
-<h2 class="blink">{{ flood_alert }}</h2>
-{% else %}
+<h2 id="floodAlert" class="blink" style="display: none;">Water levels are high!</h2>
 <h2 style="color: {{ color }}";>{{ flood_prediction_alert }}</h2>
-{% endif %}
-
 <br>
 
 <div id="weather-container">
