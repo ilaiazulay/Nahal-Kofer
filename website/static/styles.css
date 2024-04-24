@@ -154,4 +154,146 @@ select:focus {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
+.data-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.data-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.data-item h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.blink {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+
+/* General styles for the date filtering section */
+.date-filter-section {
+    margin-bottom: 20px;
+    background-color: #f2f2f2;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Styling for radio buttons and their labels */
+.date-filter-section label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.date-filter-section input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Style for input fields and labels within date selection */
+.date-input-section {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.date-input-section label {
+    margin-right: 10px;
+    min-width: 100px;
+}
+
+.date-input-section input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* Specific styles for hidden sections to smoothly transition */
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: flex;
+}
+
+#graphTitle {
+    text-align: center;
+}
+
+.centered-container {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically (if needed) */
+    height: 100%;            /* Set a height if you want vertical centering */
+}
+
+.min-max-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.min-max-container div {
+    margin: 10px 0;
+}
+
+.min-max-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.min-max-table th,
+.min-max-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.min-max-table th {
+    background-color: #f2f2f2;
+}
+
+.form-group .input-container {
+    width: 100%; /* Full width to contain the input and button */
+    display: flex;
+    justify-content: space-between; /* Distribute space between input and button */
+    align-items: center;
+}
+
+.form-control {
+    flex-grow: 1; /* Input takes up available space */
+    margin-right: 10px; /* Space between input and button */
+}
+
+button.edit-button {
+    padding: 6px 12px; /* Padding for button, adjust based on design needs */
+    white-space: nowrap; /* Prevents the text in the button from wrapping */
+}
+
+
+
+
+
 

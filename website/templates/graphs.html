@@ -4,8 +4,32 @@
 <br />
 <h2>Graphs</h2>
 
-<select id="options">
-  <option value="" disabled selected>Select an option</option>
+<br>
+
+<!-- Selection for date filtering -->
+<div class="date-filter-section">
+    <input type="radio" id="byYear" name="dateFilter" value="byYear">
+    <label for="byYear">By Year</label>
+    <input type="radio" id="byDateRange" name="dateFilter" value="byDateRange">
+    <label for="byDateRange">By Specific Date</label>
+</div>
+
+<!-- Inputs for year and date range that appear based on selection -->
+<div id="yearInput" class="date-input-section hidden">
+    <label for="year">Enter Year:</label>
+    <input type="number" id="year" min="2000">
+</div>
+
+<div id="dateRangeInput" class="date-input-section hidden">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate">
+</div>
+
+<br>
+<select id="options" class="hidden">
+  <option value="" disabled selected>Parameter</option>
     <option value="ph">ph</option>
     <option value="ph_2">ph 2</option>
     <option value="ph_average">ph avg</option>
@@ -53,7 +77,17 @@
     <option value="bod_2">bod 2</option>
 </select>
 
+<div class="centered-container">
+    <h2 id="graphTitle"></h2>
+</div>
+
 <canvas id="graph"></canvas>
+
+<div class="min-max-container">
+    <h3>Minimum and Maximum Values by Location</h3>
+    <div id="minMaxValues"></div>
+</div>
+
 
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -69,5 +103,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
 
 <script src="{{ url_for('static', filename='graphs.js') }}"></script>
+
 
 {% endblock %}

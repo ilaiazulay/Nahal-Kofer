@@ -51,7 +51,6 @@ def home():
         current_reading = 0
     else:
         current_reading = int(current_reading["distance"])
-    print(get_sensor_reading())
     today = datetime.utcnow()
     future_date = today + timedelta(days=5)
 
@@ -175,17 +174,70 @@ def graphs():
 @views.route('/get_graph_data', methods=['POST'])
 @login_required
 def get_graph_data():
-    option = request.json.get('option')
+    data = request.get_json()
+    option = data.get('option')
+    date_data = data.get('dateData', {})
 
-    lab_tests = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option)).all()
-    print(lab_tests)
+    if 'year' in date_data:
+        year = int(date_data['year'])
+        start_date = datetime(year, 1, 1)
+        end_date = datetime(year, 12, 31)
+    elif 'startDate' in date_data and 'endDate' in date_data:
+        start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
+        end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
+    else:
+        return jsonify({"error": "Invalid date data"}), 400
 
-    # Extracting data for labels and values
-    labels = [str(sample) for sample, value in lab_tests]  # Use sample directly as label
-    values = [value for sample, value in lab_tests]
-    print(labels, values)
+    # Filter data within the time range and compute average for each location
+    results = LabTest.query \
+        .with_entities(LabTest.location, func.avg(getattr(LabTest, option)).label('average')) \
+        .filter(LabTest.sample_date >= start_date, LabTest.sample_date <= end_date) \
+        .filter(LabTest.location.in_(['Metanya Left', 'Metanya Right', 'Safari', 'National Park', 'Maccabia Bridge'])) \
+        .group_by(LabTest.location) \
+        .all()
+
+    labels = [location for location, _ in results]  # Location names
+    values = [round(average, 2) if average is not None else 0 for _, average in results]  # Average values, rounded
+    print(values)
 
     return jsonify(labels=labels, values=values)
+
+
+@views.route('/get_min_max', methods=['POST'])
+@login_required
+def get_min_max():
+    data = request.get_json()
+    option = data.get('option')
+    date_data = data.get('dateData', {})
+
+    if 'year' in date_data:
+        year = int(date_data['year'])
+        start_date = datetime(year, 1, 1)
+        end_date = datetime(year, 12, 31)
+    elif 'startDate' in date_data and 'endDate' in date_data:
+        start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
+        end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
+    else:
+        return jsonify({"error": "Invalid date data"}), 400
+
+    # Query to get min, max for each location
+    results = LabTest.query \
+        .with_entities(
+            LabTest.location,
+            func.min(getattr(LabTest, option)).label('min'),
+            func.max(getattr(LabTest, option)).label('max')
+        ) \
+        .filter(LabTest.sample_date >= start_date, LabTest.sample_date <= end_date) \
+        .filter(LabTest.location.in_(['Metanya Left', 'Metanya Right', 'Safari', 'National Park', 'Maccabia Bridge'])) \
+        .group_by(LabTest.location) \
+        .all()
+
+    labels = [location for location, _, _ in results]
+    mins = [round(min_value, 2) if min_value is not None else 0 for _, min_value, _ in results]
+    maxs = [round(max_value, 2) if max_value is not None else 0 for _, _, max_value in results]
+    print(labels, mins, maxs)
+
+    return jsonify(labels=labels, mins=mins, maxs=maxs)
 
 
 @views.route('/statistics', methods=['GET', 'POST'])
@@ -266,7 +318,6 @@ def sensor():
 @views.route('/get_sensor_data')
 def get_sensor_data():
     current_reading = get_sensor_reading()
-    print(current_reading)
     return current_reading
 
 
@@ -278,150 +329,208 @@ def add_test():
         code = request.args.get('code')
         name = request.args.get('name')
         qr_created_time = request.args.get('qr_created_time')
-        latitude = request.args.get('lat')
-        longitude = request.args.get('lon')
+        location = request.args.get('location')
         qr_exists = False  # No QR code found with that code
+        qr_record = ''
 
-        if code and name and qr_created_time and latitude and longitude:
+        if code and name and qr_created_time and location:
             qr_created_date = datetime.strptime(qr_created_time, "%Y-%m-%dT%H:%M:%S.%f").date()
             qr_record = QRCode.query.filter_by(code=code).first()
             if qr_record:
                 qr_exists = True  # The QR code exists
+                lab_test = qr_record.lab_test  # Fetch the associated lab test
 
         if request.method == 'GET':
             qr_record = QRCode.query.filter_by(code=code).first()
-            if qr_record and qr_record.used is False:
-                location = str(latitude) + "," + str(longitude)
+            if qr_record:
                 print(location, qr_created_time)
-                return render_template('submit_test.html', date=qr_created_date, location=location, name=current_user.first_name, user=current_user)
+                return render_template('submit_test.html', location=location, name=current_user.first_name, user=current_user, lab_test=lab_test)
             if qr_record and qr_record.used:
                 return redirect(url_for('views.home'))
 
         if request.method == 'POST':
-            # Extract form data
-            date_format = "%Y-%m-%d"
-            sample_date = request.form.get('sampleDate')
-            sample_date = datetime.strptime(sample_date, date_format)
-            print(type(sample_date))
-            analysis_date = request.form.get('analysisDate', None)
-            if analysis_date is None:
-                # If analysis date is not provided, use the current date
-                analysis_date = datetime.now().strftime('%Y-%m-%d')
-            else:
-                analysis_date = datetime.strptime(analysis_date, date_format)
-            ph = request.form.get('ph', None)
-            ph2 = request.form.get('ph2', None)
-            ph_avg = request.form.get('phAvg', None)
-            ntu = request.form.get('ntu', None)
-            ntu2 = request.form.get('ntu2', None)
-            ave_ntu = request.form.get('aveNtu', None)
-            hardness = request.form.get('hardness', None)
-            ts_mg = request.form.get('tsMg', None)
-            ts_mg2 = request.form.get('tsMg2', None)
-            ave_ts = request.form.get('aveTs', None)
-            ts_smg = request.form.get('tsSmg', None)
-            ts_smg2 = request.form.get('tsSmg2', None)
-            ave_tss = request.form.get('aveTss', None)
-            fs_smg = request.form.get('fsSmg', None)
-            fs_smg2 = request.form.get('fsSmg2', None)
-            ave_fss = request.form.get('aveFss', None)
-            vs_smg = request.form.get('vsSmg', None)
-            vs_smg2 = request.form.get('vsSmg2', None)
-            ave_vss = request.form.get('aveVss', None)
-            td_smg = request.form.get('tdSmg', None)
-            td_smg2 = request.form.get('tdSmg2', None)
-            ave_tds = request.form.get('aveTds', None)
-            tp_mg = request.form.get('tpMg', None)
-            tp_mg2 = request.form.get('tpMg2', None)
-            ave_tp = request.form.get('aveTp', None)
-            tn = request.form.get('tn', None)
-            tn2 = request.form.get('tn2', None)
-            ave_tn = request.form.get('aveTn', None)
-            cod = request.form.get('cod', None)
-            cod2 = request.form.get('cod2', None)
-            ave_cod = request.form.get('aveCod', None)
-            nh4 = request.form.get('nh4', None)
-            nh42 = request.form.get('nh42', None)
-            ave_nh4 = request.form.get('aveNh4', None)
-            po4p = request.form.get('po4p', None)
-            po4p2 = request.form.get('po4p2', None)
-            ave_po4 = request.form.get('avePo4', None)
-            no2 = request.form.get('no2', None)
-            no22 = request.form.get('no22', None)
-            ave_no2 = request.form.get('aveNo2', None)
-            no3 = request.form.get('no3', None)
-            no32 = request.form.get('no32', None)
-            ave_no3 = request.form.get('aveNo3', None)
-            bod = request.form.get('bod', None)
-            if bod:
-                bod = True
-            else:
-                bod = False
-            bod2 = request.form.get('bod2', None)
-            if bod2:
-                bod2 = True
-            else:
-                bod2 = False
+                # Extract form data
+                date_format = "%Y-%m-%d"
+                sample_date = request.form.get('sampleDate', None)
+                if sample_date and sample_date != '':
+                    sample_date = datetime.strptime(sample_date, date_format)
+                    print(type(sample_date))
+                analysis_date = request.form.get('analysisDate', None)
+                if analysis_date is None or analysis_date == '':
+                    # If analysis date is not provided, use the current date
+                    analysis_date = datetime.now().strftime('%Y-%m-%d')
+                else:
+                    analysis_date = datetime.strptime(analysis_date, date_format)
+                ph = request.form.get('ph', None)
+                ph2 = request.form.get('ph2', None)
+                ph_avg = request.form.get('phAvg', None)
+                ntu = request.form.get('ntu', None)
+                ntu2 = request.form.get('ntu2', None)
+                ave_ntu = request.form.get('aveNtu', None)
+                hardness = request.form.get('hardness', None)
+                ts_mg = request.form.get('tsMg', None)
+                ts_mg2 = request.form.get('tsMg2', None)
+                ave_ts = request.form.get('aveTs', None)
+                ts_smg = request.form.get('tsSmg', None)
+                ts_smg2 = request.form.get('tsSmg2', None)
+                ave_tss = request.form.get('aveTss', None)
+                fs_smg = request.form.get('fsSmg', None)
+                fs_smg2 = request.form.get('fsSmg2', None)
+                ave_fss = request.form.get('aveFss', None)
+                vs_smg = request.form.get('vsSmg', None)
+                vs_smg2 = request.form.get('vsSmg2', None)
+                ave_vss = request.form.get('aveVss', None)
+                td_smg = request.form.get('tdSmg', None)
+                td_smg2 = request.form.get('tdSmg2', None)
+                ave_tds = request.form.get('aveTds', None)
+                tp_mg = request.form.get('tpMg', None)
+                tp_mg2 = request.form.get('tpMg2', None)
+                ave_tp = request.form.get('aveTp', None)
+                tn = request.form.get('tn', None)
+                tn2 = request.form.get('tn2', None)
+                ave_tn = request.form.get('aveTn', None)
+                cod = request.form.get('cod', None)
+                cod2 = request.form.get('cod2', None)
+                ave_cod = request.form.get('aveCod', None)
+                nh4 = request.form.get('nh4', None)
+                nh42 = request.form.get('nh42', None)
+                ave_nh4 = request.form.get('aveNh4', None)
+                po4p = request.form.get('po4p', None)
+                po4p2 = request.form.get('po4p2', None)
+                ave_po4 = request.form.get('avePo4', None)
+                no2 = request.form.get('no2', None)
+                no22 = request.form.get('no22', None)
+                ave_no2 = request.form.get('aveNo2', None)
+                no3 = request.form.get('no3', None)
+                no32 = request.form.get('no32', None)
+                ave_no3 = request.form.get('aveNo3', None)
+                bod = request.form.get('bod', None)
+                if bod:
+                    bod = True
+                else:
+                    bod = False
+                bod2 = request.form.get('bod2', None)
+                if bod2:
+                    bod2 = True
+                else:
+                    bod2 = False
 
-            # Create a new LabTest object
-            lab_test = LabTest(
-                sample_date=sample_date,
-                analysis_date=analysis_date,
-                ph=ph,
-                ph_2=ph2,
-                ph_average=ph_avg,
-                ntu=ntu,
-                ntu_2=ntu2,
-                ave=ave_ntu,
-                hardness=hardness,
-                ts_mg=ts_mg,
-                ts_mg_2=ts_mg2,
-                ave_ts=ave_ts,
-                ts_smg=ts_smg,
-                ts_smg_2=ts_smg2,
-                ave_tss=ave_tss,
-                fs_smg=fs_smg,
-                fs_smg_2=fs_smg2,
-                ave_fss=ave_fss,
-                vs_smg=vs_smg,
-                vs_smg_2=vs_smg2,
-                ave_vss=ave_vss,
-                td_smg=td_smg,
-                td_smg_2=td_smg2,
-                ave_tds=ave_tds,
-                tp_mg=tp_mg,
-                tp_mg_2=tp_mg2,
-                ave_tp=ave_tp,
-                tn=tn,
-                tn_2=tn2,
-                ave_tn=ave_tn,
-                cod=cod,
-                cod_2=cod2,
-                ave_cod=ave_cod,
-                nh4=nh4,
-                nh4_2=nh42,
-                ave_nh4=ave_nh4,
-                po4p=po4p,
-                po4p_2=po4p2,
-                ave_po4=ave_po4,
-                no2=no2,
-                no2_2=no22,
-                ave_no2=ave_no2,
-                no3=no3,
-                no3_2=no32,
-                ave_no3=ave_no3,
-                bod=bod,
-                bod2=bod2,
-                # Add other fields similarly
-            )
+                if qr_record:
+                    print('here')
+                    if sample_date != '':
+                        print(sample_date)
+                        lab_test.sample_date = sample_date
+                    if analysis_date is not None:
+                        lab_test.analysis_date = analysis_date
+                    lab_test.ph = ph
+                    lab_test.ph_2 = ph2
+                    lab_test.ph_average = ph_avg
+                    lab_test.ntu = ntu
+                    lab_test.ntu_2 = ntu2
+                    lab_test.ave = ave_ntu
+                    lab_test.hardness = hardness
+                    lab_test.ts_mg = ts_mg
+                    lab_test.ts_mg_2 = ts_mg2
+                    lab_test.ave_ts = ave_ts
+                    lab_test.ts_smg = ts_smg
+                    lab_test.ts_smg_2 = ts_smg2
+                    lab_test.ave_tss = ave_tss
+                    lab_test.fs_smg = fs_smg
+                    lab_test.fs_smg_2 = fs_smg2
+                    lab_test.ave_fss = ave_fss
+                    lab_test.vs_smg = vs_smg
+                    lab_test.vs_smg_2 = vs_smg2
+                    lab_test.ave_vss = ave_vss
+                    lab_test.td_smg = td_smg
+                    lab_test.td_smg_2 = td_smg2
+                    lab_test.ave_tds = ave_tds
+                    lab_test.tp_mg = tp_mg
+                    lab_test.tp_mg_2 = tp_mg2
+                    lab_test.ave_tp = ave_tp
+                    lab_test.tn = tn
+                    lab_test.tn_2 = tn2
+                    lab_test.ave_tn = ave_tn
+                    lab_test.cod = cod
+                    lab_test.cod_2 = cod2
+                    lab_test.ave_cod = ave_cod
+                    lab_test.nh4 = nh4
+                    lab_test.nh4_2 = nh42
+                    lab_test.ave_nh4 = ave_nh4
+                    lab_test.po4p = po4p
+                    lab_test.po4p_2 = po4p2
+                    lab_test.ave_po4 = ave_po4
+                    lab_test.no2 = no2
+                    lab_test.no2_2 = no22
+                    lab_test.ave_no2 = ave_no2
+                    lab_test.no3 = no3
+                    lab_test.no3_2 = no32
+                    lab_test.ave_no3 = ave_no3
+                    lab_test.bod = bod
+                    lab_test.bod2 = bod2
+                    # Add other fields similarly
 
-            # Save the LabTest object to the database
-            db.session.add(lab_test)
-            db.session.commit()
+                    # Save the LabTest object to the database
+                    db.session.commit()
+                    flash('Changes Saved', category='success')
+                    return render_template('submit_test.html', location=location, name=current_user.first_name, user=current_user, lab_test=lab_test)
+                else:
+                    # Create a new LabTest object
+                    lab_test = LabTest(
+                        sample_date=sample_date,
+                        analysis_date=analysis_date,
+                        ph=ph,
+                        ph_2=ph2,
+                        ph_average=ph_avg,
+                        ntu=ntu,
+                        ntu_2=ntu2,
+                        ave=ave_ntu,
+                        hardness=hardness,
+                        ts_mg=ts_mg,
+                        ts_mg_2=ts_mg2,
+                        ave_ts=ave_ts,
+                        ts_smg=ts_smg,
+                        ts_smg_2=ts_smg2,
+                        ave_tss=ave_tss,
+                        fs_smg=fs_smg,
+                        fs_smg_2=fs_smg2,
+                        ave_fss=ave_fss,
+                        vs_smg=vs_smg,
+                        vs_smg_2=vs_smg2,
+                        ave_vss=ave_vss,
+                        td_smg=td_smg,
+                        td_smg_2=td_smg2,
+                        ave_tds=ave_tds,
+                        tp_mg=tp_mg,
+                        tp_mg_2=tp_mg2,
+                        ave_tp=ave_tp,
+                        tn=tn,
+                        tn_2=tn2,
+                        ave_tn=ave_tn,
+                        cod=cod,
+                        cod_2=cod2,
+                        ave_cod=ave_cod,
+                        nh4=nh4,
+                        nh4_2=nh42,
+                        ave_nh4=ave_nh4,
+                        po4p=po4p,
+                        po4p_2=po4p2,
+                        ave_po4=ave_po4,
+                        no2=no2,
+                        no2_2=no22,
+                        ave_no2=ave_no2,
+                        no3=no3,
+                        no3_2=no32,
+                        ave_no3=ave_no3,
+                        bod=bod,
+                        bod2=bod2,
+                        # Add other fields similarly
+                    )
 
-            qr_record.used = True
-            db.session.commit()
-        return render_template('submit_test.html', user=current_user)
+                    # Save the LabTest object to the database
+                    db.session.add(lab_test)
+                    db.session.commit()
+                    flash('Changes Saved', category='success')
+                    return render_template('submit_test.html', user=current_user)
     else:
         return render_template('home.html', user=current_user)
 
@@ -433,14 +542,13 @@ def display_qr():
             flash("Unauthorized access.", "error")
             return redirect(url_for('home.html'))
 
-        latitude = request.form.get('lat')
-        longitude = request.form.get('lon')
-        if not latitude or not longitude:
-            flash("Latitude or longitude not provided.", "error")
+        location = request.form.get('location')
+        if not location:
+            flash("Location not provided.", "error")
             return render_template('generate_qr_code.html')
 
         # Assuming generate_qr_code returns a base64-encoded QR code image
-        img_data = generate_qr_code(latitude, longitude, current_user.first_name)
+        img_data = generate_qr_code(location, current_user.first_name)
         return render_template('display_qr.html', user=current_user, img_data=img_data)
 
     # Handle GET request if necessary
@@ -450,7 +558,6 @@ def display_qr():
 @views.route('/generate_qr_code')
 def get_qr_code():
     if current_user.category == 'Lab':
-        print()
         return render_template('generate_qr_code.html', user=current_user)
     else:
         return render_template('home.html', user=current_user)

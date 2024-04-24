@@ -10,9 +10,9 @@ def setup_scheduler(app):
     scheduler.start()
 
     # Pass the app instance directly to the jobs
-    scheduler.add_job(lambda: save_daily_sensor_reading(app), 'cron', hour=15, minute=54, second=0)
-    scheduler.add_job(lambda: check_flood_risk(app), 'cron', hour=15, minute=57, second=0)
-    scheduler.add_job(id='Sensor Reading Task', func=lambda: get_water_level(app), trigger='interval', seconds=60)
+    scheduler.add_job(lambda: save_daily_sensor_reading(app), 'cron', hour=13, minute=56, second=0)
+    scheduler.add_job(lambda: check_flood_risk(app), 'cron', hour=13, minute=59, second=0)
+    scheduler.add_job(id='Sensor Reading Task', func=lambda: get_water_level_alert(app), trigger='interval', seconds=10)
 
     @app.teardown_appcontext
     def shutdown_scheduler(exception=None):
@@ -127,24 +127,27 @@ def save_daily_sensor_reading(app):
             print("Failed to save daily sensor reading:", e)
 
 
-def get_water_level(app):
+def get_water_level_alert(app):
+    print("get_water_level_alert")
     from .models import User
     with app.app_context():  # Use the passed app instance for the application context
         from .models import Sensor
         from .mqtt_client import get_sensor_reading
-        sensor_reading = int(get_sensor_reading())
+        sensor_reading = get_sensor_reading()
+        sensor_reading = json.loads(sensor_reading)
+        if not sensor_reading:
+            sensor_reading = 0
+        else:
+            sensor_reading = int(sensor_reading["distance"])
         if sensor_reading <= 27:
+            # Select only users with category 'Municipality'
+            municipality_users = User.query.filter_by(category='Municipality').all()
             now = datetime.utcnow()
-            # Check if an email has already been sent in the last 24 hours
-            if sensor_reading <= 27:
-                # Select only users with category 'Municipality'
-                municipality_users = User.query.filter_by(category='Municipality').all()
-                now = datetime.utcnow()
 
-                for user in municipality_users:
-                    # Check if the user was never emailed or if it's been more than a day since the last email
-                    if user.last_email_sent is None or now - user.last_email_sent > timedelta(days=1):
-                        send_alert_email(user, sensor_reading, now)
+            for user in municipality_users:
+                # Check if the user was never emailed or if it's been more than a day since the last email
+                if user.last_email_sent is None or now - user.last_email_sent > timedelta(days=1):
+                    send_alert_email(user, sensor_reading, now)
 
 
 def send_alert_email(user, current_reading, now):

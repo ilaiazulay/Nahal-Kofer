@@ -213,14 +213,20 @@ async function updateSensorData() {
     try {
         const response = await fetch('/get_sensor_data');
         const data = await response.json();
-        if(data.distance != undefined)
-            document.getElementById('reading').innerHTML = data.distance + ' cm';
-        else
+        let distance = data.distance;
+        if (distance !== undefined) {
+            distance = parseFloat(distance).toFixed(1);  // Format to one decimal place
+            if (distance - 20 >= 0)
+                document.getElementById('reading').innerHTML = (distance - 20).toFixed(1) + ' cm';
+            else
+                document.getElementById('reading').innerHTML = '0 cm';
+        } else {
             document.getElementById('reading').innerHTML = 'Lost Connection';
+        }
         const floodAlertElement = document.getElementById('floodAlert');
         console.log(data);
 
-        if(data.distance <= 27) {
+        if (distance - 20 <= 7) {
             floodAlertElement.style.display = 'block'; // Show flood alert
         } else {
             floodAlertElement.style.display = 'none'; // Hide flood alert

@@ -15,7 +15,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global sensor_reading
     sensor_reading = msg.payload.decode("utf-8")
-    print(f"Received message: {sensor_reading} from topic: {msg.topic}")
+    # print(f"Received message: {sensor_reading} from topic: {msg.topic}")
 
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)

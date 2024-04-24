@@ -3,33 +3,18 @@
 {% block content %}
 <br />
 <h2>Loading QR Code</h2>
-<!-- Hidden Form -->
-<form id="geoForm" action="/display_qr" method="POST" style="display:none;">
-    <input type="hidden" name="lat" id="latField">
-    <input type="hidden" name="lon" id="lonField">
+<!-- Location Selection Form -->
+<form id="geoForm" action="/display_qr" method="POST">
+    <label for="location">Select Location:</label>
+    <select id="location" name="location">
+        <option value="Metanya Left">Metanya Left</option>
+        <option value="Metanya Right">Metanya Right</option>
+        <option value="Safari">Safari</option>
+        <option value="National Park">National Park</option>
+        <option value="Maccabia Bridge">Maccabia Bridge</option>
+    </select>
+    <br/><br/>
+    <input type="submit" value="Generate QR Code">
 </form>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        getLocation();
-    });
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(sendLocation, showError);
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-    function sendLocation(position) {
-        document.getElementById('latField').value = position.coords.latitude;
-        document.getElementById('lonField').value = position.coords.longitude;
-        document.getElementById('geoForm').submit();
-    }
-
-    function showError(error) {
-        alert("Failed to get location: " + error.message);
-    }
-</script>
 {% endblock %}
