@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const endDate = document.getElementById('endDate');
     const optionsSelect = document.getElementById("options");
     const graphTitle = document.getElementById("graphTitle"); // Assuming there's an element to display the title
+    const precipitationTitle = document.getElementById("precipitationTitle"); // Assuming there's an element to display the title
+    const MinMaxTitle = document.getElementById("MinMaxTitle"); // Assuming there's an element to display the title
 
     function updateVisibility() {
         if (byYear.checked) {
@@ -38,11 +40,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             payload.dateData = { year: yearInput.value };
+            var startDateValue = `${yearInput.value}-01-01`;
+            var endDateValue = `${yearInput.value}-12-31`;
+            fetchPrecipitationData(startDateValue, endDateValue);
         } else if (byDateRange.checked) {
             if (!startDate.value || !endDate.value) {
                 alert("You have to pick both a start date and an end date.");
                 return;
             }
+            fetchPrecipitationData(startDate.value, endDate.value);
             payload.dateData = {
                 startDate: startDate.value,
                 endDate: endDate.value
@@ -71,57 +77,85 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    function renderGraph(data, option) {
-        var ctx = document.getElementById('graph').getContext('2d');
+function renderGraph(data, option) {
+    var ctx = document.getElementById('graph').getContext('2d');
 
-        if (window.myChart) {
-            window.myChart.destroy();
-        }
+    if (window.myChart) {
+        window.myChart.destroy(); // Destroy the existing chart instance if exists
+    }
 
-        if(graphTitle) {
-            graphTitle.textContent = `${option}`; // Set the graph title dynamically
-        }
+    // Update the graph title dynamically based on the selected option
+    if(graphTitle) {
+        graphTitle.textContent = `${option}`;
+    }
 
-        window.myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: data.labels,
-                    data: data.values,
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Location'
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Average Value'
-                        }
+    // Prepare datasets: Each location gets its own dataset
+    var datasets = data.labels.map((location, index) => ({
+        label: location, // Each location is a separate dataset
+        data: [data.values[index]], // Wrap in array to match the expected data structure
+        backgroundColor: generateBackgroundColor(index), // Function to generate color
+        borderColor: generateBorderColor(index), // Function to generate border color
+        borderWidth: 1
+    }));
+
+    window.myChart = new Chart(ctx, {
+        type: 'bar', // Assuming bar type graph
+        data: {
+            labels: ['Average'], // Common label for all datasets
+            datasets: datasets
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Parameter'
                     }
                 },
-                plugins: {
-                    legend: {
+                y: {
+                    beginAtZero: true,
+                    title: {
                         display: true,
-                        position: 'top',
-                        labels: {
-                            color: 'rgb(54, 162, 235)' // Ensure this matches your design
-                        }
+                        text: 'Value'
                     }
                 }
-            }
-        });
-    }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            responsive: true
+        }
+    });
+}
+
+function generateBackgroundColor(index) {
+    const colors = [
+        'rgba(54, 162, 235, 0.5)',  // Blue
+        'rgba(255, 99, 132, 0.5)',   // Red
+        'rgba(75, 192, 192, 0.5)',   // Green
+        'rgba(255, 206, 86, 0.5)',   // Yellow
+        'rgba(153, 102, 255, 0.5)',  // Purple
+        'rgba(255, 159, 64, 0.5)'    // Orange
+    ];
+    return colors[index % colors.length];
+}
+
+function generateBorderColor(index) {
+    const colors = [
+        'rgba(54, 162, 235, 1)',     // Blue
+        'rgba(255, 99, 132, 1)',     // Red
+        'rgba(75, 192, 192, 1)',     // Green
+        'rgba(255, 206, 86, 1)',     // Yellow
+        'rgba(153, 102, 255, 1)',    // Purple
+        'rgba(255, 159, 64, 1)'      // Orange
+    ];
+    return colors[index % colors.length];
+}
+
+
 
     function fetchMinMaxData(payload) {
     fetch('/get_min_max', {
@@ -143,6 +177,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function displayMinMax(data) {
     const minMaxContainer = document.getElementById('minMaxValues');
     minMaxContainer.innerHTML = ''; // Clear previous entries
+
+    if(MinMaxTitle) {
+        MinMaxTitle.textContent = `Minimum and Maximum Values by Location`; // Set the graph title dynamically
+    }
 
     const table = document.createElement('table');
     table.classList.add('min-max-table');
@@ -178,6 +216,96 @@ function displayMinMax(data) {
     });
 
     minMaxContainer.appendChild(table);
+}
+
+function fetchPrecipitationData(startDate, endDate) {
+    const token = 'EhbOAoVcydnYoYpiFFwDAFzfqNVJcNfW'; // NOAA API token
+    const stationId = 'GHCND:USW00094728'; // Example station ID for Tel Aviv, replace with actual ID if needed
+    const datasetId = 'GHCND'; // Global Historical Climatology Network Daily
+    const dataTypeId = 'PRCP'; // Data type ID for precipitation
+    const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
+
+    fetch(url, {
+        headers: {
+            'token': token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Precipitation data:', data);
+        displayPrecipitationGraph(data);
+    })
+    .catch(error => {
+        console.error('Error fetching precipitation data:', error);
+    });
+}
+
+
+function displayPrecipitationGraph(data) {
+    var labels = [];
+    var precipitationData = [];
+
+    if(precipitationTitle) {
+        precipitationTitle.textContent = `Precipitation Data`; // Set the graph title dynamically
+    }
+
+    if (data && data.results) {
+        data.results.forEach(result => {
+            labels.push(result.date); // 'date' might need to be formatted properly
+            precipitationData.push(result.value); // Assuming 'value' is the precipitation amount
+        });
+    }
+
+    var ctx = document.getElementById('precipitationGraph').getContext('2d');
+    if (window.precipitationChart) {
+        window.precipitationChart.destroy();
+    }
+
+    window.precipitationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Daily Precipitation (mm)',
+                data: precipitationData,
+                backgroundColor: 'rgba(66, 135, 245, 0.2)',
+                borderColor: 'rgba(66, 135, 245, 1)',
+                borderWidth: 1,
+                pointRadius: 2,
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Precipitation (mm)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
 }
 
 

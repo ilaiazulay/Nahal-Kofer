@@ -249,6 +249,28 @@ select:focus {
     height: 100%;            /* Set a height if you want vertical centering */
 }
 
+.centered-container {
+    display: flex;
+    flex-direction: column;  /* Stacks items vertically */
+    align-items: center;     /* Centers items horizontally */
+    justify-content: center; /* Centers items vertically, useful if there's extra space */
+    width: 100%;             /* Ensures the container takes full width */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.centered-container h2 {
+    text-align: center;  /* Centers the text of h2 elements */
+    width: 100%;         /* Ensures the h2 element takes full container width */
+    margin-bottom: 10px; /* Adds some space between the h2 and the canvas */
+}
+
+
+canvas {
+    width: 100% !important; /* Ensures canvas takes up the full container width */
+    height: 400px !important; /* Adjust height as needed */
+}
+
 .min-max-container {
     text-align: center;
     margin-top: 20px;
