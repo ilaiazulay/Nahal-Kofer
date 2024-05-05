@@ -40,7 +40,7 @@
     <div class="form-group">
         <label for="ph">ph:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="ph" name="ph" {% if lab_test.ph %}value="{{ lab_test.ph }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="ph" name="ph" {% if lab_test.ph %}value="{{ lab_test.ph }}" readonly >
             <button type="button" id="ph_button" onclick="toggleReadOnly('ph', 'ph_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -48,7 +48,7 @@
     <div class="form-group">
         <label for="ph2">ph 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="ph2" name="ph2" {% if lab_test.ph_2 %}value="{{ lab_test.ph_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="ph2" name="ph2" {% if lab_test.ph_2 %}value="{{ lab_test.ph_2 }}" readonly >
             <button type="button" id="ph2_button" onclick="toggleReadOnly('ph2', 'ph2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -56,7 +56,7 @@
     <div class="form-group">
         <label for="phAvg">ph avg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="phAvg" name="phAvg" {% if lab_test.ph_average %}value="{{ lab_test.ph_average }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="phAvg" name="phAvg" {% if lab_test.ph_average %}value="{{ lab_test.ph_average }}" readonly >
             <button type="button" id="phAvg_button" onclick="toggleReadOnly('phAvg', 'phAvg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -64,7 +64,7 @@
     <div class="form-group">
         <label for="ntu">ntu:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="ntu" name="ntu" {% if lab_test.ntu %}value="{{ lab_test.ntu }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="ntu" name="ntu" {% if lab_test.ntu %}value="{{ lab_test.ntu }}" readonly >
             <button type="button" id="ntu_button" onclick="toggleReadOnly('ntu', 'ntu_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -72,7 +72,7 @@
     <div class="form-group">
         <label for="ntu2">ntu 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="ntu2" name="ntu2" {% if lab_test.ntu_2 %}value="{{ lab_test.ntu_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="ntu2" name="ntu2" {% if lab_test.ntu_2 %}value="{{ lab_test.ntu_2 }}" readonly >
             <button type="button" id="ntu2_button" onclick="toggleReadOnly('ntu2', 'ntu2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -80,7 +80,7 @@
     <div class="form-group">
         <label for="aveNtu">ave ntu:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveNtu" name="aveNtu" {% if lab_test.ave %}value="{{ lab_test.ave }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveNtu" name="aveNtu" {% if lab_test.ave %}value="{{ lab_test.ave }}" readonly >
             <button type="button" id="aveNtu_button" onclick="toggleReadOnly('aveNtu', 'aveNtu_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -88,7 +88,7 @@
     <div class="form-group">
         <label for="hardness">hardness:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="hardness" name="hardness" {% if lab_test.hardness %}value="{{ lab_test.hardness }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="hardness" name="hardness" {% if lab_test.hardness %}value="{{ lab_test.hardness }}" readonly >
             <button type="button" id="hardness_button" onclick="toggleReadOnly('hardness', 'hardness_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -96,7 +96,7 @@
     <div class="form-group">
         <label for="tsMg">ts mg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tsMg" name="tsMg" {% if lab_test.ts_mg %}value="{{ lab_test.ts_mg }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tsMg" name="tsMg" {% if lab_test.ts_mg %}value="{{ lab_test.ts_mg }}" readonly >
             <button type="button" id="tsMg_button" onclick="toggleReadOnly('tsMg', 'tsMg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -104,7 +104,7 @@
     <div class="form-group">
         <label for="tsMg2">ts mg 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tsMg2" name="tsMg2" {% if lab_test.ts_mg_2 %}value="{{ lab_test.ts_mg_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tsMg2" name="tsMg2" {% if lab_test.ts_mg_2 %}value="{{ lab_test.ts_mg_2 }}" readonly >
             <button type="button" id="tsMg2_button" onclick="toggleReadOnly('tsMg2', 'tsMg2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -112,7 +112,7 @@
     <div class="form-group">
         <label for="aveTs">ave ts:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveTs" name="aveTs" {% if lab_test.ave_ts %}value="{{ lab_test.ave_ts }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveTs" name="aveTs" {% if lab_test.ave_ts %}value="{{ lab_test.ave_ts }}" readonly >
             <button type="button" id="aveTs_button" onclick="toggleReadOnly('aveTs', 'aveTs_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -120,7 +120,7 @@
     <div class="form-group">
         <label for="tsSmg">ts smg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tsSmg" name="tsSmg" {% if lab_test.ts_smg %}value="{{ lab_test.ts_smg }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tsSmg" name="tsSmg" {% if lab_test.ts_smg %}value="{{ lab_test.ts_smg }}" readonly >
             <button type="button" id="tsSmg_button" onclick="toggleReadOnly('tsSmg', 'tsSmg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -128,7 +128,7 @@
     <div class="form-group">
         <label for="tsSmg2">ts smg2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tsSmg2" name="tsSmg2" {% if lab_test.ts_smg_2 %}value="{{ lab_test.ts_smg_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tsSmg2" name="tsSmg2" {% if lab_test.ts_smg_2 %}value="{{ lab_test.ts_smg_2 }}" readonly >
             <button type="button" id="tsSmg2_button" onclick="toggleReadOnly('tsSmg2', 'tsSmg2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -136,7 +136,7 @@
     <div class="form-group">
         <label for="aveTss">ave tss:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveTss" name="aveTss" {% if lab_test.ave_tss %}value="{{ lab_test.ave_tss }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveTss" name="aveTss" {% if lab_test.ave_tss %}value="{{ lab_test.ave_tss }}" readonly >
             <button type="button" id="aveTss_button" onclick="toggleReadOnly('aveTss', 'aveTss_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -144,7 +144,7 @@
     <div class="form-group">
         <label for="fsSmg">fs smg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="fsSmg" name="fsSmg" {% if lab_test.fs_smg %}value="{{ lab_test.fs_smg }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="fsSmg" name="fsSmg" {% if lab_test.fs_smg %}value="{{ lab_test.fs_smg }}" readonly >
             <button type="button" id="fsSmg_button" onclick="toggleReadOnly('fsSmg', 'fsSmg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -152,7 +152,7 @@
     <div class="form-group">
         <label for="fsSmg2">fs smg 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="fsSmg2" name="fsSmg2" {% if lab_test.fs_smg_2 %}value="{{ lab_test.fs_smg_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="fsSmg2" name="fsSmg2" {% if lab_test.fs_smg_2 %}value="{{ lab_test.fs_smg_2 }}" readonly >
             <button type="button" id="fsSmg2_button" onclick="toggleReadOnly('fsSmg2', 'fsSmg2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -160,7 +160,7 @@
     <div class="form-group">
         <label for="aveFss">ave fss:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveFss" name="aveFss" {% if lab_test.ave_fss %}value="{{ lab_test.ave_fss }}" readonly>
+            <input type="number" step="0.01"  class="form-control" id="aveFss" name="aveFss" {% if lab_test.ave_fss %}value="{{ lab_test.ave_fss }}" readonly>
             <button type="button" id="aveFss_button" onclick="toggleReadOnly('aveFss', 'aveFss_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -168,7 +168,7 @@
     <div class="form-group">
         <label for="vsSmg">vs smg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="vsSmg" name="vsSmg" {% if lab_test.vs_smg %}value="{{ lab_test.vs_smg }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="vsSmg" name="vsSmg" {% if lab_test.vs_smg %}value="{{ lab_test.vs_smg }}" readonly >
             <button type="button" id="vsSmg_button" onclick="toggleReadOnly('vsSmg', 'vsSmg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -176,7 +176,7 @@
     <div class="form-group">
         <label for="vsSmg2">vs smg 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="vsSmg2" name="vsSmg2" {% if lab_test.vs_smg_2 %}value="{{ lab_test.vs_smg_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="vsSmg2" name="vsSmg2" {% if lab_test.vs_smg_2 %}value="{{ lab_test.vs_smg_2 }}" readonly >
             <button type="button" id="vsSmg2_button" onclick="toggleReadOnly('vsSmg2', 'vsSmg2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -184,7 +184,7 @@
     <div class="form-group">
         <label for="aveVss">ave vss:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveVss" name="aveVss" {% if lab_test.ave_vss %}value="{{ lab_test.ave_vss }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveVss" name="aveVss" {% if lab_test.ave_vss %}value="{{ lab_test.ave_vss }}" readonly >
             <button type="button" id="aveVss_button" onclick="toggleReadOnly('aveVss', 'aveVss_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -192,7 +192,7 @@
     <div class="form-group">
         <label for="tdSmg">td smg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tdSmg" name="tdSmg" {% if lab_test.td_smg %}value="{{ lab_test.td_smg }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tdSmg" name="tdSmg" {% if lab_test.td_smg %}value="{{ lab_test.td_smg }}" readonly >
             <button type="button" id="tdSmg_button" onclick="toggleReadOnly('tdSmg', 'tdSmg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -200,7 +200,7 @@
     <div class="form-group">
         <label for="tdSmg2">td smg 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tdSmg2" name="tdSmg2" {% if lab_test.td_smg_2 %}value="{{ lab_test.td_smg_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tdSmg2" name="tdSmg2" {% if lab_test.td_smg_2 %}value="{{ lab_test.td_smg_2 }}" readonly >
             <button type="button" id="tdSmg2_button" onclick="toggleReadOnly('tdSmg2', 'tdSmg2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -208,7 +208,7 @@
     <div class="form-group">
         <label for="aveTds">ave tds:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveTds" name="aveTds" {% if lab_test.ave_tds %}value="{{ lab_test.ave_tds }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveTds" name="aveTds" {% if lab_test.ave_tds %}value="{{ lab_test.ave_tds }}" readonly >
             <button type="button" id="aveTds_button" onclick="toggleReadOnly('aveTds', 'aveTds_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -216,7 +216,7 @@
     <div class="form-group">
         <label for="tpMg">tp mg:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tpMg" name="tpMg" {% if lab_test.tp_mg %}value="{{ lab_test.tp_mg }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tpMg" name="tpMg" {% if lab_test.tp_mg %}value="{{ lab_test.tp_mg }}" readonly >
             <button type="button" id="tpMg_button" onclick="toggleReadOnly('tpMg', 'tpMg_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -224,7 +224,7 @@
     <div class="form-group">
         <label for="tpMg2">tp mg 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tpMg2" name="tpMg2" {% if lab_test.tp_mg_2 %}value="{{ lab_test.tp_mg_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tpMg2" name="tpMg2" {% if lab_test.tp_mg_2 %}value="{{ lab_test.tp_mg_2 }}" readonly >
             <button type="button" id="tpMg2_button" onclick="toggleReadOnly('tpMg2', 'tpMg2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -232,7 +232,7 @@
     <div class="form-group">
         <label for="aveTp">ave tp:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveTp" name="aveTp" {% if lab_test.ave_tp %}value="{{ lab_test.ave_tp }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveTp" name="aveTp" {% if lab_test.ave_tp %}value="{{ lab_test.ave_tp }}" readonly >
             <button type="button" id="aveTp_button" onclick="toggleReadOnly('aveTp', 'aveTp_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -240,7 +240,7 @@
     <div class="form-group">
         <label for="tn">tn:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tn" name="tn" {% if lab_test.tn %}value="{{ lab_test.tn }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tn" name="tn" {% if lab_test.tn %}value="{{ lab_test.tn }}" readonly >
             <button type="button" id="tn_button" onclick="toggleReadOnly('tn', 'tn_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -248,7 +248,7 @@
     <div class="form-group">
         <label for="tn2">tn 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="tn2" name="tn2" {% if lab_test.tn_2 %}value="{{ lab_test.tn_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="tn2" name="tn2" {% if lab_test.tn_2 %}value="{{ lab_test.tn_2 }}" readonly >
             <button type="button" id="tn2_button" onclick="toggleReadOnly('tn2', 'tn2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -256,7 +256,7 @@
     <div class="form-group">
         <label for="aveTn">ave tn:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveTn" name="aveTn" {% if lab_test.ave_tn %}value="{{ lab_test.ave_tn }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveTn" name="aveTn" {% if lab_test.ave_tn %}value="{{ lab_test.ave_tn }}" readonly >
             <button type="button" id="aveTn_button" onclick="toggleReadOnly('aveTn', 'aveTn_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -264,7 +264,7 @@
     <div class="form-group">
         <label for="cod">cod:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="cod" name="cod" {% if lab_test.cod %}value="{{ lab_test.cod }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="cod" name="cod" {% if lab_test.cod %}value="{{ lab_test.cod }}" readonly >
             <button type="button" id="cod_button" onclick="toggleReadOnly('cod', 'cod_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -272,7 +272,7 @@
     <div class="form-group">
         <label for="cod2">cod 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="cod2" name="cod2" {% if lab_test.cod_2 %}value="{{ lab_test.cod_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="cod2" name="cod2" {% if lab_test.cod_2 %}value="{{ lab_test.cod_2 }}" readonly >
             <button type="button" id="cod2_button" onclick="toggleReadOnly('cod2', 'cod2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -280,7 +280,7 @@
     <div class="form-group">
         <label for="aveCod">ave cod:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveCod" name="aveCod" {% if lab_test.ave_cod %}value="{{ lab_test.ave_cod }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveCod" name="aveCod" {% if lab_test.ave_cod %}value="{{ lab_test.ave_cod }}" readonly >
             <button type="button" id="aveCod_button" onclick="toggleReadOnly('aveCod', 'aveCod_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -288,7 +288,7 @@
     <div class="form-group">
         <label for="nh4">nh4:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="nh4" name="nh4" {% if lab_test.nh4 %}value="{{ lab_test.nh4 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="nh4" name="nh4" {% if lab_test.nh4 %}value="{{ lab_test.nh4 }}" readonly >
             <button type="button" id="nh4_button" onclick="toggleReadOnly('nh4', 'nh4_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -296,7 +296,7 @@
     <div class="form-group">
         <label for="nh42">nh4 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="nh42" name="nh42" {% if lab_test.nh4_2 %}value="{{ lab_test.nh4_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="nh42" name="nh42" {% if lab_test.nh4_2 %}value="{{ lab_test.nh4_2 }}" readonly >
             <button type="button" id="nh42_button" onclick="toggleReadOnly('nh42', 'nh42_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -304,7 +304,7 @@
     <div class="form-group">
         <label for="aveNh4">ave nh4:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveNh4" name="aveNh4" {% if lab_test.ave_nh4 %}value="{{ lab_test.ave_nh4 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveNh4" name="aveNh4" {% if lab_test.ave_nh4 %}value="{{ lab_test.ave_nh4 }}" readonly >
             <button type="button" id="aveNh4_button" onclick="toggleReadOnly('aveNh4', 'aveNh4_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -312,7 +312,7 @@
     <div class="form-group">
         <label for="po4p">po4p:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="po4p" name="po4p" {% if lab_test.po4p %}value="{{ lab_test.po4p }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="po4p" name="po4p" {% if lab_test.po4p %}value="{{ lab_test.po4p }}" readonly >
             <button type="button" id="po4p_button" onclick="toggleReadOnly('po4p', 'po4p_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -320,7 +320,7 @@
     <div class="form-group">
         <label for="po4p2">po4p 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="po4p2" name="po4p2" {% if lab_test.po4p_2 %}value="{{ lab_test.po4p_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="po4p2" name="po4p2" {% if lab_test.po4p_2 %}value="{{ lab_test.po4p_2 }}" readonly >
             <button type="button" id="po4p2_button" onclick="toggleReadOnly('po4p2', 'po4p2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -328,7 +328,7 @@
     <div class="form-group">
         <label for="avePo4">ave po4:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="avePo4" name="avePo4" {% if lab_test.ave_po4 %}value="{{ lab_test.ave_po4 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="avePo4" name="avePo4" {% if lab_test.ave_po4 %}value="{{ lab_test.ave_po4 }}" readonly >
             <button type="button" id="avePo4_button" onclick="toggleReadOnly('avePo4', 'avePo4_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -336,7 +336,7 @@
     <div class="form-group">
         <label for="no2">no2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="no2" name="no2" {% if lab_test.no2 %}value="{{ lab_test.no2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="no2" name="no2" {% if lab_test.no2 %}value="{{ lab_test.no2 }}" readonly >
             <button type="button" id="no2_button" onclick="toggleReadOnly('no2', 'no2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -344,7 +344,7 @@
     <div class="form-group">
         <label for="no22">no2 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="no22" name="no22" {% if lab_test.no2_2 %}value="{{ lab_test.no2_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="no22" name="no22" {% if lab_test.no2_2 %}value="{{ lab_test.no2_2 }}" readonly >
             <button type="button" id="no22_button" onclick="toggleReadOnly('no22', 'no22_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -352,7 +352,7 @@
     <div class="form-group">
         <label for="aveNo2">ave no2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveNo2" name="aveNo2" {% if lab_test.ave_no2 %}value="{{ lab_test.ave_no2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveNo2" name="aveNo2" {% if lab_test.ave_no2 %}value="{{ lab_test.ave_no2 }}" readonly >
             <button type="button" id="aveNo2_button" onclick="toggleReadOnly('aveNo2', 'aveNo2_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -360,7 +360,7 @@
     <div class="form-group">
         <label for="no3">no3:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="no3" name="no3" {% if lab_test.no3 %}value="{{ lab_test.no3 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="no3" name="no3" {% if lab_test.no3 %}value="{{ lab_test.no3 }}" readonly >
             <button type="button" id="no3_button" onclick="toggleReadOnly('no3', 'no3_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -368,7 +368,7 @@
     <div class="form-group">
         <label for="no32">no3 2:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="no32" name="no32" {% if lab_test.no3_2 %}value="{{ lab_test.no3_2 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="no32" name="no32" {% if lab_test.no3_2 %}value="{{ lab_test.no3_2 }}" readonly >
             <button type="button" id="no32_button" onclick="toggleReadOnly('no32', 'no32_button')">Edit</button>{% endif %}
         </div>
     </div>
@@ -376,7 +376,7 @@
     <div class="form-group">
         <label for="aveNo3">ave no3:</label>
         <div class="input-container">
-            <input type="number" class="form-control" id="aveNo3" name="aveNo3" {% if lab_test.ave_no3 %}value="{{ lab_test.ave_no3 }}" readonly >
+            <input type="number" step="0.01"  class="form-control" id="aveNo3" name="aveNo3" {% if lab_test.ave_no3 %}value="{{ lab_test.ave_no3 }}" readonly >
             <button type="button" id="aveNo3_button" onclick="toggleReadOnly('aveNo3', 'aveNo3_button')">Edit</button>{% endif %}
         </div>
     </div>

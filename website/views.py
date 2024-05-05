@@ -163,6 +163,142 @@ def lab_tests():
                            finish_time=finish_time, lab_tests=lab_tests)
 
 
+@views.route('/lab_tests/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_lab_test(id):
+    lab_test = LabTest.query.get_or_404(id)
+
+    if request.method == 'POST':
+        try:
+            # sample_date = request.form.get('analysis_date', None)
+            # if sample_date:
+            #     sample_date = datetime.strptime(sample_date, '%Y-%m-%d').date()
+            # analysis_date = request.form.get('analysis_date', None)
+            # if analysis_date:
+            #     analysis_date = datetime.strptime(analysis_date, '%Y-%m-%d').date()
+            ph = request.form.get('ph', None)
+            ph2 = request.form.get('ph2', None)
+            ph_avg = request.form.get('phAvg', None)
+            ntu = request.form.get('ntu', None)
+            ntu2 = request.form.get('ntu2', None)
+            ave_ntu = request.form.get('aveNtu', None)
+            hardness = request.form.get('hardness', None)
+            ts_mg = request.form.get('tsMg', None)
+            ts_mg2 = request.form.get('tsMg2', None)
+            ave_ts = request.form.get('aveTs', None)
+            ts_smg = request.form.get('tsSmg', None)
+            ts_smg2 = request.form.get('tsSmg2', None)
+            ave_tss = request.form.get('aveTss', None)
+            fs_smg = request.form.get('fsSmg', None)
+            fs_smg2 = request.form.get('fsSmg2', None)
+            ave_fss = request.form.get('aveFss', None)
+            vs_smg = request.form.get('vsSmg', None)
+            vs_smg2 = request.form.get('vsSmg2', None)
+            ave_vss = request.form.get('aveVss', None)
+            td_smg = request.form.get('tdSmg', None)
+            td_smg2 = request.form.get('tdSmg2', None)
+            ave_tds = request.form.get('aveTds', None)
+            tp_mg = request.form.get('tpMg', None)
+            tp_mg2 = request.form.get('tpMg2', None)
+            ave_tp = request.form.get('aveTp', None)
+            tn = request.form.get('tn', None)
+            tn2 = request.form.get('tn2', None)
+            ave_tn = request.form.get('aveTn', None)
+            cod = request.form.get('cod', None)
+            cod2 = request.form.get('cod2', None)
+            ave_cod = request.form.get('aveCod', None)
+            nh4 = request.form.get('nh4', None)
+            nh42 = request.form.get('nh42', None)
+            ave_nh4 = request.form.get('aveNh4', None)
+            po4p = request.form.get('po4p', None)
+            po4p2 = request.form.get('po4p2', None)
+            ave_po4 = request.form.get('avePo4', None)
+            no2 = request.form.get('no2', None)
+            no22 = request.form.get('no22', None)
+            ave_no2 = request.form.get('aveNo2', None)
+            no3 = request.form.get('no3', None)
+            no32 = request.form.get('no32', None)
+            ave_no3 = request.form.get('aveNo3', None)
+            bod = request.form.get('bod', None)
+            if bod:
+                bod = True
+            else:
+                bod = False
+            bod2 = request.form.get('bod2', None)
+            if bod2:
+                bod2 = True
+            else:
+                bod2 = False
+            # Add other fields as needed
+
+            # if sample_date is not None:
+            #     lab_test.sample_date = sample_date
+            # if analysis_date is not None:
+            #     lab_test.analysis_date = analysis_date
+            lab_test.ph = ph
+            lab_test.ph_2 = ph2
+            lab_test.ph_average = ph_avg
+            lab_test.ntu = ntu
+            lab_test.ntu_2 = ntu2
+            lab_test.ave = ave_ntu
+            lab_test.hardness = hardness
+            lab_test.ts_mg = ts_mg
+            lab_test.ts_mg_2 = ts_mg2
+            lab_test.ave_ts = ave_ts
+            lab_test.ts_smg = ts_smg
+            lab_test.ts_smg_2 = ts_smg2
+            lab_test.ave_tss = ave_tss
+            lab_test.fs_smg = fs_smg
+            lab_test.fs_smg_2 = fs_smg2
+            lab_test.ave_fss = ave_fss
+            lab_test.vs_smg = vs_smg
+            lab_test.vs_smg_2 = vs_smg2
+            lab_test.ave_vss = ave_vss
+            lab_test.td_smg = td_smg
+            lab_test.td_smg_2 = td_smg2
+            lab_test.ave_tds = ave_tds
+            lab_test.tp_mg = tp_mg
+            lab_test.tp_mg_2 = tp_mg2
+            lab_test.ave_tp = ave_tp
+            lab_test.tn = tn
+            lab_test.tn_2 = tn2
+            lab_test.ave_tn = ave_tn
+            lab_test.cod = cod
+            lab_test.cod_2 = cod2
+            lab_test.ave_cod = ave_cod
+            lab_test.nh4 = nh4
+            lab_test.nh4_2 = nh42
+            lab_test.ave_nh4 = ave_nh4
+            lab_test.po4p = po4p
+            lab_test.po4p_2 = po4p2
+            lab_test.ave_po4 = ave_po4
+            lab_test.no2 = no2
+            lab_test.no2_2 = no22
+            lab_test.ave_no2 = ave_no2
+            lab_test.no3 = no3
+            lab_test.no3_2 = no32
+            lab_test.ave_no3 = ave_no3
+            lab_test.bod = bod
+            lab_test.bod2 = bod2
+            db.session.commit()
+            flash('Lab test updated successfully!', category='success')
+            return redirect(url_for('views.lab_tests'))
+        except Exception as e:
+            flash(f'Error updating lab test: {e}', category='error')
+
+    return render_template('edit_lab_test.html', lab_test=lab_test, user=current_user)
+
+
+@views.route('/lab_tests/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_lab_test(id):
+    lab_test = LabTest.query.get_or_404(id)
+    db.session.delete(lab_test)
+    db.session.commit()
+    flash('Lab test deleted successfully!', category='success')
+    return redirect(url_for('views.lab_tests'))
+
+
 @views.route('/graphs', methods=['GET', 'POST'])
 @login_required
 def graphs():

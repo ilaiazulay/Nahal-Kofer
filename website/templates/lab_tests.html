@@ -21,130 +21,165 @@
 <br>
 
 {% if start_time is not none and finish_time is not none %}
-<table class="table">
-  <thead>
-  <tr>
-    <th>Sample Date</th>
-    <th>Analysis Date</th>
-    <th>ph</th>
-    <th>ph 2</th>
-    <th>ph avg</th>
-    <th>ntu</th>
-    <th>ntu 2</th>
-    <th>ave</th>
-    <th>hardness</th>
-    <th>ts mg</th>
-    <th>ts mg 2</th>
-    <th>ave ts</th>
-    <th>ts smg</th>
-    <th>ts smg2</th>
-    <th>ave tss</th>
-    <th>fs smg</th>
-    <th>fs smg 2</th>
-    <th>ave fss</th>
-    <th>vs smg</th>
-    <th>vs smg 2</th>
-    <th>ave vss</th>
-    <th>td smg</th>
-    <th>td smg</th>
-    <th>ave tds</th>
-    <th>tp mg</th>
-    <th>tp mg 2</th>
-    <th>ave tp</th>
-    <th>tn</th>
-    <th>tn 2</th>
-    <th>ave tn</th>
-    <th>tp mg 2</th>
-    <th>tn</th>
-    <th>tn 2</th>
-    <th>ave tn</th>
-    <th>cod</th>
-    <th>cod 2</th>
-    <th>ave cod</th>
-    <th>nh4</th>
-    <th>nh4 2</th>
-    <th>ave nh4</th>
-    <th>po4p</th>
-    <th>po4p 2</th>
-    <th>ave po4</th>
-    <th>no2</th>
-    <th>no2 2</th>
-    <th>ave no2</th>
-    <th>no3</th>
-    <th>no3 2</th>
-    <th>ave no3</th>
-    <th>bod</th>
-    <th>bod 2</th>
-  </tr>
-  </thead>
-<tbody>
-  {% for lab_test in lab_tests %}
-    {% if lab_test.sample_date >= start_time and lab_test.sample_date <= finish_time %}
-      <tr>
-        <td>{{ lab_test.sample_date.strftime('%Y-%m-%d') }}</td>
-        <td>{{ lab_test.analysis_date }}</td>
-        <td>{{ lab_test.ph }}</td>
-        <td>{{ lab_test.ph }}</td>
-        <td>{{ lab_test.ph_2 }}</td>
-        <td>{{ lab_test.ph_2 }}</td>
-        <td>{{ lab_test.ph_avg }}</td>
-        <td>{{ lab_test.ntu }}</td>
-        <td>{{ lab_test.ntu_2 }}</td>
-        <td>{{ lab_test.ave }}</td>
-        <td>{{ lab_test.hardness }}</td>
-        <td>{{ lab_test.ts_mg }}</td>
-        <td>{{ lab_test.ts_mg_2 }}</td>
-        <td>{{ lab_test.ave_ts }}</td>
-        <td>{{ lab_test.ts_smg }}</td>
-        <td>{{ lab_test.ts_smg_2 }}</td>
-        <td>{{ lab_test.ave_tss }}</td>
-        <td>{{ lab_test.fs_smg }}</td>
-        <td>{{ lab_test.fs_smg_2 }}</td>
-        <td>{{ lab_test.ave_fss }}</td>
-        <td>{{ lab_test.vs_smg }}</td>
-        <td>{{ lab_test.vs_smg_2 }}</td>
-        <td>{{ lab_test.ave_vss }}</td>
-        <td>{{ lab_test.td_smg }}</td>
-        <td>{{ lab_test.ave_tds }}</td>
-        <td>{{ lab_test.tp_mg }}</td>
-        <td>{{ lab_test.tp_mg_2 }}</td>
-        <td>{{ lab_test.ave_tp }}</td>
-        <td>{{ lab_test.tn }}</td>
-        <td>{{ lab_test.tn_2 }}</td>
-        <td>{{ lab_test.ave_tn }}</td>
-        <td>{{ lab_test.tp_mg_2 }}</td>
-        <td>{{ lab_test.tn }}</td>
-        <td>{{ lab_test.tn_2 }}</td>
-        <td>{{ lab_test.ave_tn }}</td>
-        <td>{{ lab_test.cod }}</td>
-        <td>{{ lab_test.cod_2 }}</td>
-        <td>{{ lab_test.ave_cod }}</td>
-        <td>{{ lab_test.nh4 }}</td>
-        <td>{{ lab_test.nh4_2 }}</td>
-        <td>{{ lab_test.ave_nh4 }}</td>
-        <td>{{ lab_test.po4p }}</td>
-        <td>{{ lab_test.po4p_2 }}</td>
-        <td>{{ lab_test.ave_po4 }}</td>
-        <td>{{ lab_test.no2 }}</td>
-        <td>{{ lab_test.no2_2 }}</td>
-        <td>{{ lab_test.ave_no2 }}</td>
-        <td>{{ lab_test.no3 }}</td>
-        <td>{{ lab_test.no3_2 }}</td>
-        <td>{{ lab_test.ave_no3 }}</td>
-        <td>{{ lab_test.bod }}</td>
-        <td>{{ lab_test.bod_2 }}</td>
-      </tr>
+<div style="max-width: 100%; max-height: 400px; overflow: auto; border: 1px solid #ddd;">
+  <table class="table" style="width: 100%;">
+    <thead>
+    <tr>
+      <th style="position: sticky; left: 0; background-color: #fff; z-index: 2; border-right: 1px solid #ddd;">Sample Date</th>
+      <th>Location</th>
+      <th>Analysis Date</th>
+      <th>ph</th>
+      <th>ph 2</th>
+      <th>ph avg</th>
+      <th>Alkalinity</th>
+      <th>ntu</th>
+      <th>ntu 2</th>
+      <th>ave</th>
+      <th>hardness</th>
+      <th>ts mg</th>
+      <th>ts mg 2</th>
+      <th>ave ts</th>
+      <th>ts smg</th>
+      <th>ts smg2</th>
+      <th>ave tss</th>
+      <th>fs smg</th>
+      <th>fs smg 2</th>
+      <th>ave fss</th>
+      <th>vs smg</th>
+      <th>vs smg 2</th>
+      <th>ave vss</th>
+      <th>td smg</th>
+      <th>td smg 2</th>
+      <th>ave tds</th>
+      <th>tp mg</th>
+      <th>tp mg 2</th>
+      <th>ave tp</th>
+      <th>tn</th>
+      <th>tn 2</th>
+      <th>ave tn</th>
+      <th>cod</th>
+      <th>cod 2</th>
+      <th>ave cod</th>
+      <th>nh4</th>
+      <th>nh4 2</th>
+      <th>ave nh4</th>
+      <th>po4p</th>
+      <th>po4p 2</th>
+      <th>ave po4</th>
+      <th>no2</th>
+      <th>no2 2</th>
+      <th>ave no2</th>
+      <th>no3</th>
+      <th>no3 2</th>
+      <th>ave no3</th>
+      <th>bod</th>
+      <th>bod 2</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+  <tbody>
+    {% for lab_test in lab_tests %}
+      {% if lab_test.sample_date and lab_test.sample_date >= start_time and lab_test.sample_date <= finish_time %}
+        <tr>
+          <td style="position: sticky; left: 0; background-color: #fff; z-index: 1; border-right: 1px solid #ddd;">{{ lab_test.sample_date.strftime('%Y-%m-%d') if lab_test.sample_date else 'N/A' }}</td>
+          <td>{{ lab_test.location if lab_test.location else 'N/A' }}</td>
+          <td>{{ lab_test.analysis_date if lab_test.analysis_date else 'N/A' }}</td>
+          <td>{{ lab_test.ph }}</td>
+          <td>{{ lab_test.ph_2 }}</td>
+          <td>{{ lab_test.ph_avg }}</td>
+          <td>{{ lab_test.Alkalinity }}</td>
+          <td>{{ lab_test.ntu }}</td>
+          <td>{{ lab_test.ntu_2 }}</td>
+          <td>{{ lab_test.ave }}</td>
+          <td>{{ lab_test.hardness }}</td>
+          <td>{{ lab_test.ts_mg }}</td>
+          <td>{{ lab_test.ts_mg_2 }}</td>
+          <td>{{ lab_test.ave_ts }}</td>
+          <td>{{ lab_test.ts_smg }}</td>
+          <td>{{ lab_test.ts_smg_2 }}</td>
+          <td>{{ lab_test.ave_tss }}</td>
+          <td>{{ lab_test.fs_smg }}</td>
+          <td>{{ lab_test.fs_smg_2 }}</td>
+          <td>{{ lab_test.ave_fss }}</td>
+          <td>{{ lab_test.vs_smg }}</td>
+          <td>{{ lab_test.vs_smg_2 }}</td>
+          <td>{{ lab_test.ave_vss }}</td>
+          <td>{{ lab_test.td_smg }}</td>
+          <td>{{ lab_test.td_smg_2 }}</td>
+          <td>{{ lab_test.ave_tds }}</td>
+          <td>{{ lab_test.tp_mg }}</td>
+          <td>{{ lab_test.tp_mg_2 }}</td>
+          <td>{{ lab_test.ave_tp }}</td>
+          <td>{{ lab_test.tn }}</td>
+          <td>{{ lab_test.tn_2 }}</td>
+          <td>{{ lab_test.ave_tn }}</td>
+          <td>{{ lab_test.cod }}</td>
+          <td>{{ lab_test.cod_2 }}</td>
+          <td>{{ lab_test.ave_cod }}</td>
+          <td>{{ lab_test.nh4 }}</td>
+          <td>{{ lab_test.nh4_2 }}</td>
+          <td>{{ lab_test.ave_nh4 }}</td>
+          <td>{{ lab_test.po4p }}</td>
+          <td>{{ lab_test.po4p_2 }}</td>
+          <td>{{ lab_test.ave_po4 }}</td>
+          <td>{{ lab_test.no2 }}</td>
+          <td>{{ lab_test.no2_2 }}</td>
+          <td>{{ lab_test.ave_no2 }}</td>
+          <td>{{ lab_test.no3 }}</td>
+          <td>{{ lab_test.no3_2 }}</td>
+          <td>{{ lab_test.ave_no3 }}</td>
+          <td>{{ lab_test.bod }}</td>
+          <td>{{ lab_test.bod_2 }}</td>
+          <td>
+            <!-- Trigger Edit Modal -->
+            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal" onclick="loadEditModal({{ lab_test.id }})">Edit</button>
+            <!-- Delete button remains as a form -->
+            <form action="{{ url_for('views.delete_lab_test', id=lab_test.id) }}" method="post" style="display: inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this lab test?');">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
     {% endif %}
-  {% endfor %}
-  {% endif %}
-</tbody>
-</table>
-<div class="arrow-buttons">
-  <button class="prev-btn">&lt;</button>
-  <button class="next-btn">&gt;</button>
+  </tbody>
+  </table>
 </div>
+<!--<div class="arrow-buttons">-->
+<!--  <button class="prev-btn">&lt;</button>-->
+<!--  <button class="next-btn">&gt;</button>-->
+<!--</div>-->
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<script src="{{ url_for('static', filename='lab_tests.js') }}"></script>
+<!--<script src="{{ url_for('static', filename='lab_tests.js') }}"></script>-->
 
+<!-- The Edit Modal - Step 1 code -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Lab Test</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Dynamic form content will be loaded here via JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript Function to Load Modal - Step 3 -->
+<script>
+function loadEditModal(id) {
+  // Fetch the edit form via an AJAX request
+  fetch(`/lab_tests/edit/${id}`)
+    .then(response => response.text())
+    .then(html => {
+      document.querySelector('#editModal .modal-body').innerHTML = html;
+    })
+    .catch(error => console.error('Error loading edit form:', error));
+}
+</script>
 
 {% endblock %}

@@ -3,11 +3,14 @@
 {% block content %}
 <br />
 <h2>QR Code</h2>
-<body>
-{% if img_data %}
-<img src="data:image/png;base64,{{ img_data }}" alt="QR Code">
-{% endif %}
-</body>
-</html>
+    {% if img_data %}
+    <img id="qr-code" src="data:image/png;base64,{{ img_data }}" alt="QR Code">
+    {% endif %}
+    <br />
+    <!-- Print Button with Styles -->
+    <button id="qr_button" type="button" onclick="printQRCode()">Print</button>
+
+<script src="{{ url_for('static', filename='display_qr.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 {% endblock %}
