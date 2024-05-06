@@ -329,6 +329,13 @@ button.edit-button {
     border-radius: 5px;
 }
 
+/* styles.css */
+.table th,
+.table td {
+  min-width: 150px; /* Set to your desired width */
+}
+
+
 
 
 
