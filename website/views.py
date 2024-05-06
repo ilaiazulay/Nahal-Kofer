@@ -481,8 +481,8 @@ def add_test():
             if qr_record:
                 print(location, qr_created_time)
                 return render_template('submit_test.html', location=location, name=current_user.first_name, user=current_user, lab_test=lab_test)
-            if qr_record and qr_record.used:
-                return redirect(url_for('views.home'))
+            else:
+                return render_template('submit_test.html', location="", name="", user=current_user, lab_test="")
 
         if request.method == 'POST':
                 # Extract form data
