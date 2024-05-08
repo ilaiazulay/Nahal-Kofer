@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Locations{% endblock %}
+{% block content %}
+<br />
+<h1>Locations</h1>
+<br>
+<h3>Default Locations</h3>
+<br>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+<ul>
+    <li>
+        Metanya Left
+    </li>
+    <li>
+        Metanya Right
+    </li>
+    <li>
+        Safari
+    </li>
+    <li>
+        National Park
+    </li>
+    <li>
+        Maccabia Bridge
+    </li>
+    <br>
+    <br>
+    <h3>Custom Locations</h3>
+    <br>
+  {% for location in locations %}
+  <li id="location-{{ location.id }}">
+    <span id="name-{{ location.id }}">{{ location.name }}</span>
+    <button id="edit-button-{{ location.id }}" class="location-btn edit-btn" onclick="toggleForm({{ location.id }})">Edit</button>
+    <form id="edit-form-{{ location.id }}" method="POST" action="{{ url_for('views.edit_location', id=location.id) }}" style="display: none;">
+      <input type="text" name="location_name" placeholder="Enter new name" required>
+      <button type="submit" class="location-btn update-btn">Update</button>
+      <button type="button" class="location-btn cancel-btn" onclick="cancelEdit({{ location.id }})">Cancel</button>
+    </form>
+    <form method="POST" action="{{ url_for('views.delete_location', id=location.id) }}">
+      <button type="submit" class="location-btn delete-btn" onclick="return confirm('Are you sure you want to delete this location?');">Delete</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+
+<br>
+<button id="add-location-btn" class="location-btn add-btn">+ Add Location</button>
+<form id="add-location-form" method="POST" action="{{ url_for('views.add_location') }}" style="display: none;">
+    <input type="text" name="location_name" placeholder="Add new location" required>
+    <button type="submit" class="location-btn add-btn">Add</button>
+    <button type="button" class="location-btn cancel-btn" onclick="cancelAddLocation()">Cancel</button>
+</form>
+
+<script src="{{ url_for('static', filename='locations.js') }}"></script>
+
+{% endblock %}

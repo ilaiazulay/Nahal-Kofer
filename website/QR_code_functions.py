@@ -29,7 +29,7 @@ def generate_qr_code(location, name):
     img_data = base64.b64encode(img_io.getvalue()).decode('utf-8')
 
     # Create a new QRCode object and associate it with a LabTest
-    lab_test = LabTest(location=location)  # Create LabTest object with relevant data
+    lab_test = LabTest(location=location, name=name, sample_date=created_at)  # Create LabTest object with relevant data
     db.session.add(lab_test)
     db.session.commit()
 

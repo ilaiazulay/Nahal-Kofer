@@ -12,7 +12,7 @@ from . import db
 from datetime import datetime, time, timedelta
 import json
 from excel_handler import validate_excel_file, extract_excel_file
-from .models import LabTest, QRCode, Prediction
+from .models import LabTest, QRCode, Prediction, Location
 from .QR_code_functions import generate_qr_code
 
 
@@ -475,6 +475,7 @@ def add_test():
             if qr_record:
                 qr_exists = True  # The QR code exists
                 lab_test = qr_record.lab_test  # Fetch the associated lab test
+                print(lab_test)
 
         if request.method == 'GET':
             qr_record = QRCode.query.filter_by(code=code).first()
@@ -694,8 +695,57 @@ def display_qr():
 @views.route('/generate_qr_code')
 def get_qr_code():
     if current_user.category == 'Lab':
-        return render_template('generate_qr_code.html', user=current_user)
+        locations = Location.query.all()  # Fetch all locations from the database
+        return render_template('generate_qr_code.html', user=current_user, locations=locations)
     else:
         return render_template('home.html', user=current_user)
+
+
+
+@views.route('/locations', methods=['GET'])
+@login_required
+def locations():
+    locations = Location.query.all()
+    return render_template("locations.html", user=current_user, locations=locations)
+
+
+@views.route('/locations/add', methods=['POST'])
+@login_required
+def add_location():
+    location_name = request.form.get('location_name')
+    if location_name:
+        new_location = Location(name=location_name)
+        db.session.add(new_location)
+        db.session.commit()
+        flash('Location added successfully!', category='success')
+    else:
+        flash('Location name is required.', category='error')
+    return redirect(url_for('views.locations'))
+
+
+@views.route('/locations/edit/<int:id>', methods=['POST'])
+@login_required
+def edit_location(id):
+    location = Location.query.get_or_404(id)
+    new_name = request.form.get('location_name')
+    if new_name:
+        location.name = new_name
+        db.session.commit()
+        flash('Location updated successfully!', category='success')
+    else:
+        flash('Location name is required.', category='error')
+    return redirect(url_for('views.locations'))
+
+
+@views.route('/locations/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_location(id):
+    location = Location.query.get_or_404(id)
+    db.session.delete(location)
+    db.session.commit()
+    flash('Location deleted successfully!', category='success')
+    return redirect(url_for('views.locations'))
+
+
 
 

@@ -87,3 +87,8 @@ class LabTest(db.Model):
     ave_no3 = db.Column(db.Integer, nullable=True)
     bod = db.Column(db.Boolean, nullable=True)
     bod2 = db.Column(db.Boolean, nullable=True)
+
+
+class Location(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))

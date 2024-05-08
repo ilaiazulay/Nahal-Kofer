@@ -3,7 +3,7 @@
 {% block content %}
 <br />
 <h2>Loading QR Code</h2>
-<!-- Location Selection Form -->
+<br>
 <form id="geoForm" action="/display_qr" method="POST">
     <label for="location">Select Location:</label>
     <select id="location" name="location">
@@ -12,9 +12,14 @@
         <option value="Safari">Safari</option>
         <option value="National Park">National Park</option>
         <option value="Maccabia Bridge">Maccabia Bridge</option>
+        {% for location in locations %}
+        <option value="{{ location.name }}">{{ location.name }}</option>
+        {% endfor %}
     </select>
     <br/><br/>
-    <input type="submit" value="Generate QR Code">
+    <input id="generate_qr_code_button" type="submit" value="Generate QR Code">
 </form>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 {% endblock %}

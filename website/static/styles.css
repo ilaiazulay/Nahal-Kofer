@@ -335,6 +335,128 @@ button.edit-button {
   min-width: 150px; /* Set to your desired width */
 }
 
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+li form, li span {
+  margin-right: 10px;
+}
+
+button {
+  padding: 5px 10px;
+}
+
+input[type="text"] {
+  padding: 5px;
+}
+
+.location-btn {
+  padding: 8px 12px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-btn, .update-btn {
+  background-color: #007BFF; /* Blue color for edit and update buttons */
+  margin-right: 6px;
+}
+
+.edit-btn:hover, .update-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.delete-btn {
+  background-color: #dc3545; /* Red color for the delete button */
+}
+
+.delete-btn:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+.cancel-btn {
+  background-color: #6c757d; /* Gray color for the cancel button */
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+}
+
+input[type="text"] {
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-btn {
+  background-color: #28a745; /* Green color for the add button */
+}
+
+.add-btn:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.cancel-btn, #add-location-form button[type="button"] {
+  background-color: #6c757d; /* Gray color for cancel buttons */
+}
+
+.cancel-btn:hover, #add-location-form button[type="button"]:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+}
+
+.add-btn, .update-btn {
+  background-color: #28a745; /* Green color for add and update buttons */
+}
+
+.add-btn:hover, .update-btn:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.delete-btn {
+  background-color: #dc3545; /* Red color for delete buttons */
+}
+
+.delete-btn:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* Styles for the form */
+#geoForm {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    max-width: 300px; /* Limit the width of the form for better aesthetics */
+}
+
+#generate_qr_code_button {
+    background-color: #007BFF; /* Bootstrap primary blue */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block; /* Make the button take the full width */
+    width: 100%;
+    margin-top: 10px; /* Space from the dropdown */
+}
+
+#generate_qr_code_button:hover {
+    background-color: #0056b3; /* A darker shade for the hover state */
+}
+
+
 
 
 
