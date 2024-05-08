@@ -24,27 +24,6 @@ views = Blueprint('views', __name__)
 def home():
     print(current_user.category)
 
-    ph_sum = db.session.query(func.sum(LabTest.ph)).scalar()
-    ph_count = db.session.query(func.count(LabTest.ph)).scalar()
-    ph_average = ph_sum / ph_count if ph_sum is not None and ph_count != 0 else 0
-
-    hardness_sum = db.session.query(func.sum(LabTest.hardness)).scalar()
-    hardness_count = db.session.query(func.count(LabTest.hardness)).scalar()
-    hardness_average = hardness_sum / hardness_count if hardness_sum is not None and hardness_count != 0 else 0
-
-    ts_sum = db.session.query(func.sum(LabTest.ts_mg)).scalar()
-    ts_count = db.session.query(func.count(LabTest.ts_mg)).scalar()
-    ts_average = ts_sum / ts_count if ts_sum is not None and ts_count != 0 else 0
-
-    last_two_tests = LabTest.query.order_by(desc(LabTest.sample_date)).limit(2).all()
-    last_two_ph_values = [test.ph for test in last_two_tests if test.ph is not None]
-    last_two_hardness_values = [test.hardness for test in last_two_tests if test.hardness is not None]
-    last_two_ts_values = [test.ts_mg for test in last_two_tests if test.ts_mg is not None]
-
-    last_two_ph_average = sum(last_two_ph_values) / len(last_two_ph_values) if last_two_ph_values else 0
-    last_two_hardness_average = sum(last_two_hardness_values) / len(last_two_hardness_values) if last_two_hardness_values else 0
-    last_two_ts_average = sum(last_two_ts_values) / len(last_two_ts_values) if last_two_ts_values else 0
-
     current_reading = get_sensor_reading()
     current_reading = json.loads(current_reading)
     if not current_reading:
@@ -70,10 +49,7 @@ def home():
         flood_prediction_alert = "No flood alert for the upcoming week."
         color = 'green'
 
-    return render_template("home.html", user=current_user, ph_average=ph_average, hardness_average=hardness_average,
-                           ts_average=ts_average, last_two_ph_average=last_two_ph_average,
-                           last_two_hardness_average=last_two_hardness_average, last_two_ts_average=last_two_ts_average,
-                           distance=current_reading, flood_prediction_alert=flood_prediction_alert, color=color)
+    return render_template("home.html", user=current_user, distance=current_reading, flood_prediction_alert=flood_prediction_alert, color=color)
 
 
 @views.route('/upload_file', methods=['GET', 'POST'])
@@ -490,14 +466,14 @@ def add_test():
                 date_format = "%Y-%m-%d"
                 sample_date = request.form.get('sampleDate', None)
                 if sample_date and sample_date != '':
-                    sample_date = datetime.strptime(sample_date, date_format)
+                    sample_date = datetime.strptime(sample_date, date_format).date()
                     print(type(sample_date))
                 analysis_date = request.form.get('analysisDate', None)
                 if analysis_date is None or analysis_date == '':
                     # If analysis date is not provided, use the current date
-                    analysis_date = datetime.now().strftime('%Y-%m-%d')
+                    analysis_date = datetime.now().date()
                 else:
-                    analysis_date = datetime.strptime(analysis_date, date_format)
+                    analysis_date = datetime.strptime(analysis_date, date_format).date()
                 ph = request.form.get('ph', None)
                 ph2 = request.form.get('ph2', None)
                 ph_avg = request.form.get('phAvg', None)
@@ -554,6 +530,7 @@ def add_test():
 
                 if qr_record:
                     print('here')
+                    print(analysis_date)
                     if sample_date != '':
                         print(sample_date)
                         lab_test.sample_date = sample_date
