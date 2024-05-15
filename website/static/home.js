@@ -224,10 +224,12 @@ async function updateSensorData() {
             document.getElementById('reading').innerHTML = 'Lost Connection';
         }
         const floodAlertElement = document.getElementById('floodAlert');
+
         console.log(data);
 
         if (distance - 20 <= 7) {
             floodAlertElement.style.display = 'block'; // Show flood alert
+
         } else {
             floodAlertElement.style.display = 'none'; // Hide flood alert
         }

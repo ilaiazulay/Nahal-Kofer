@@ -77,6 +77,14 @@
     <option value="bod_2">bod 2</option>
 </select>
 
+<!-- Chart type selection -->
+<div class="form-group styled-radio-group">
+    <input type="radio" id="barChart" name="chartType" value="bar" class="styled-radio" checked>
+    <label for="barChart" class="styled-label">Bar Chart</label>
+    <input type="radio" id="lineChart" name="chartType" value="line" class="styled-radio">
+    <label for="lineChart" class="styled-label">Line Chart</label>
+</div>
+
 <div class="centered-container">
     <h2 id="graphTitle"></h2>
     <canvas id="graph"></canvas>
@@ -87,13 +95,10 @@
     <canvas id="precipitationGraph"></canvas>
 </div>
 
-
 <div class="min-max-container">
     <h3 id="MinMaxTitle"></h3>
     <div id="minMaxValues"></div>
 </div>
-
-
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <!-- JavaScript to handle the selection and render the graph -->
@@ -107,7 +112,6 @@
 <!-- Include Chart.js Zoom Plugin -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
 
-<script src="{{ url_for('static', filename='graphs.js') }}"></script>
-
+<script src="{{ url_for('static', filename='lab_tests_graphs.js') }}"></script>
 
 {% endblock %}

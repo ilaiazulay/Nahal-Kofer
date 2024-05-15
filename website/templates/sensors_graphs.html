@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<br />
+<h2>Graphs</h2>
+
+<br>
+
+<!-- Selection for date filtering -->
+<div class="date-filter-section">
+    <input type="radio" id="byYear" name="dateFilter" value="byYear">
+    <label for="byYear">By Year</label>
+    <input type="radio" id="byDateRange" name="dateFilter" value="byDateRange">
+    <label for="byDateRange">By Specific Date</label>
+</div>
+
+<!-- Inputs for year and date range that appear based on selection -->
+<div id="yearInput" class="date-input-section hidden">
+    <label for="year">Enter Year:</label>
+    <input type="number" id="year" min="2000">
+</div>
+
+<div id="dateRangeInput" class="date-input-section hidden">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate">
+</div>
+
+<br>
+<select id="options" class="hidden">
+  <option value="" disabled selected>Parameter</option>
+    <option value="PH">PH</option>
+    <option value="Water Level">Water Level</option>
+</select>
+
+
+<div class="centered-container">
+    <h2 id="graphTitle"></h2>
+    <canvas id="graph"></canvas>
+</div>
+
+<div class="centered-container">
+    <h2 id="precipitationTitle"></h2>
+    <canvas id="precipitationGraph"></canvas>
+</div>
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<!-- JavaScript to handle the selection and render the graph -->
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Include Date-fns library for Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/date-fns@2.16.1/dist/date-fns.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<!-- Include Chart.js Zoom Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
+
+<script src="{{ url_for('static', filename='sensors_graphs.js') }}"></script>
+
+{% endblock %}

@@ -12,7 +12,7 @@ from . import db
 from datetime import datetime, time, timedelta
 import json
 from excel_handler import validate_excel_file, extract_excel_file
-from .models import LabTest, QRCode, Prediction, Location
+from .models import LabTest, QRCode, Prediction, Location, Sensor
 from .QR_code_functions import generate_qr_code
 
 
@@ -275,12 +275,12 @@ def delete_lab_test(id):
     return redirect(url_for('views.lab_tests'))
 
 
-@views.route('/graphs', methods=['GET', 'POST'])
+@views.route('/graphs/lab_tests', methods=['GET', 'POST'])
 @login_required
-def graphs():
+def lab_tests_graphs():
     lab_tests = LabTest.query.all()
 
-    return render_template("graphs.html", user=current_user, lab_tests=lab_tests)
+    return render_template("lab_tests_graphs.html", user=current_user, lab_tests=lab_tests)
 
 
 @views.route('/get_graph_data', methods=['POST'])
@@ -313,6 +313,97 @@ def get_graph_data():
     print(values)
 
     return jsonify(labels=labels, values=values)
+
+
+@views.route('/get_line_graph_data', methods=['POST'])
+@login_required
+def get_line_graph_data():
+    data = request.get_json()
+    option = data.get('option')
+    date_data = data.get('dateData', {})
+
+    if 'year' in date_data:
+        year = int(date_data['year'])
+        start_date = datetime(year, 1, 1)
+        end_date = datetime(year, 12, 31)
+    elif 'startDate' in date_data and 'endDate' in date_data:
+        start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
+        end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
+    else:
+        return jsonify({"error": "Invalid date data"}), 400
+
+    lab_tests = LabTest.query \
+        .with_entities(LabTest.sample_date, LabTest.location, getattr(LabTest, option)) \
+        .filter(LabTest.sample_date >= start_date, LabTest.sample_date <= end_date) \
+        .all()
+
+    data_dict = {}
+    for sample_date, location, value in lab_tests:
+        if location not in data_dict:
+            data_dict[location] = {'dates': [], 'values': []}
+        data_dict[location]['dates'].append(sample_date.strftime('%Y-%m-%d'))
+        data_dict[location]['values'].append(value)
+
+    return jsonify(data_dict)
+
+
+@views.route('/graphs/sensors', methods=['GET', 'POST'])
+@login_required
+def sensors_graphs():
+    lab_tests = LabTest.query.all()
+    sensors = Sensor.query.all()
+
+    return render_template("sensors_graphs.html", user=current_user, lab_tests=lab_tests, sensors=sensors)
+
+
+@views.route('/get_sensors_graph_data', methods=['POST'])
+@login_required
+def get_sensors_graph_data():
+    data = request.get_json()
+    option = data.get('option')
+    date_data = data.get('dateData', {})
+
+    if 'year' in date_data:
+        year = int(date_data['year'])
+        start_date = datetime(year, 1, 1)
+        end_date = datetime(year, 12, 31)
+    elif 'startDate' in date_data and 'endDate' in date_data:
+        start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
+        end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
+    else:
+        return jsonify({"error": "Invalid date data"}), 400
+
+    data_dict = {}
+
+    if option == 'PH':
+        lab_tests = LabTest.query \
+            .with_entities(LabTest.sample_date, LabTest.location, LabTest.ph) \
+            .filter(LabTest.sample_date >= start_date, LabTest.sample_date <= end_date) \
+            .all()
+
+        for sample_date, location, value in lab_tests:
+            if location not in data_dict:
+                data_dict[location] = {'dates': [], 'values': []}
+            data_dict[location]['dates'].append(sample_date.strftime('%Y-%m-%d'))
+            data_dict[location]['values'].append(value)
+
+    elif option == 'Water Level':
+        sensors = Sensor.query \
+            .with_entities(Sensor.date, Sensor.type, Sensor.value) \
+            .filter(Sensor.date >= start_date, Sensor.date <= end_date, Sensor.type == 'Water Level') \
+            .all()
+
+        for date, type_, value in sensors:
+            location = "Water Level Sensor"  # Assuming there is only one type of water level sensor
+            if location not in data_dict:
+                data_dict[location] = {'dates': [], 'values': []}
+            data_dict[location]['dates'].append(date.strftime('%Y-%m-%d'))
+            data_dict[location]['values'].append(value)
+
+    else:
+        return jsonify({"error": "Invalid option"}), 400
+
+    return jsonify(data_dict)
 
 
 @views.route('/get_min_max', methods=['POST'])
