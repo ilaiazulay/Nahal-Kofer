@@ -629,6 +629,95 @@ body {
     margin-bottom: 20px; /* Space below the sections */
 }
 
+.location-data {
+    margin-top: 10px;
+}
+
+.location-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.data-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.data-header {
+    flex-shrink: 0;
+    height: 60px; /* Adjust this value as needed for consistent header height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-content {
+    margin-top: 10px;
+    min-height: 50px; /* Ensure consistent height for content sections */
+}
+
+.location-data {
+    margin-top: 10px;
+}
+
+.location-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+#hourly-forecast-container, #daily-forecast-container {
+    margin-top: 20px;
+}
+
+ #daily-forecast-container {
+    margin-top: 60px;
+ }
+
+#hourly-forecast, #daily-forecast {
+    display: flex;
+    justify-content: space-between;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.hourly-item {
+    flex: 0 0 auto;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+    margin-top: 60px;
+    color: white;
+}
+
+.daily-item {
+    flex: 0 0 auto;
+    width: 19%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+    margin-top: 60px;
+    color: white;
+}
+
+.hourly-item img, .daily-item img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+
+
 
 
 

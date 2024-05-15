@@ -72,14 +72,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Weather API
 document.addEventListener("DOMContentLoaded", function() {
-    const apiKey = '87a8064c9b4357fcf99ad406e6e63f02';
+    const apiKey = '87a8064c9b4357fcf99ad406e6e63f02'; // Replace 'YOUR_API_KEY' with your actual API key
     const city = 'Tel-Aviv';
     const lon = 34.824783;
     const lat = 32.068424;
-    const currentWeatherUrl = 'https://api.openweathermap.org/data/2.5/weather?q=Tel-Aviv&appid=87a8064c9b4357fcf99ad406e6e63f02';
-    const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=32.068424&lon=34.824783&appid=87a8064c9b4357fcf99ad406e6e63f02';
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
-        fetch(currentWeatherUrl)
+    fetch(currentWeatherUrl)
         .then(response => response.json())
         .then(data => {
             displayWeather(data);
@@ -93,11 +93,11 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             displayHourlyForecast(data.list);
-            displayRainForecast(data.list);
+            displayDailyForecast(data.list);
         })
         .catch(error => {
-            console.error('Error fetching hourly forecast data:', error);
-            alert('Error fetching hourly forecast data. Please try again.');
+            console.error('Error fetching forecast data:', error);
+            alert('Error fetching forecast data. Please try again.');
         });
 });
 
@@ -105,64 +105,71 @@ function displayWeather(data) {
     const tempDivInfo = document.getElementById('temp-div');
     const weatherInfoDiv = document.getElementById('weather-info');
     const weatherIcon = document.getElementById('weather-icon');
-    const hourlyForecastDiv = document.getElementById('hourly-forecast');
 
-    // Clear previous content
-    weatherInfoDiv.innerHTML = '';
-    hourlyForecastDiv.innerHTML = '';
-    tempDivInfo.innerHTML = '';
+    const cityName = data.name;
+    const temperature = Math.round(data.main.temp - 273.15); // Convert to Celsius
+    const description = data.weather[0].description;
+    const iconCode = data.weather[0].icon;
+    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
 
-    if (data.cod === '404') {
-        weatherInfoDiv.innerHTML = `<p>${data.message}</p>`;
-    } else {
-        const cityName = data.name;
-        const temperature = Math.round(data.main.temp - 273.15); // Convert to Celsius
-        const description = data.weather[0].description;
-        const iconCode = data.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+    const temperatureHTML = `<p>${temperature}°C</p>`;
+    const weatherHtml = `<p>${cityName}</p><p>${description}</p>`;
 
-        const temperatureHTML = `
-            <p>${temperature}°C</p>
-        `;
-
-        const weatherHtml = `
-            <p>${cityName}</p>
-            <p>${description}</p>
-        `;
-
-        tempDivInfo.innerHTML = temperatureHTML;
-        weatherInfoDiv.innerHTML = weatherHtml;
-        weatherIcon.src = iconUrl;
-        weatherIcon.alt = description;
-
-        showImage();
-    }
+    tempDivInfo.innerHTML = temperatureHTML;
+    weatherInfoDiv.innerHTML = weatherHtml;
+    weatherIcon.src = iconUrl;
+    weatherIcon.alt = description;
 }
 
 function displayHourlyForecast(hourlyData) {
     const hourlyForecastDiv = document.getElementById('hourly-forecast');
+    hourlyForecastDiv.innerHTML = ''; // Clear previous content
 
     const next24Hours = hourlyData.slice(0, 8); // Display the next 24 hours (3-hour intervals)
 
     next24Hours.forEach(item => {
         const dateTime = new Date(item.dt * 1000); // Convert timestamp to milliseconds
         const hour = dateTime.getHours();
-        console.log(hour)
         const temperature = Math.round(item.main.temp - 273.15); // Convert to Celsius
-        console.log(temperature)
         const iconCode = item.weather[0].icon;
-        console.log(iconCode);
         const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
 
-        const hourlyItemHtml = `
-            <div class="hourly-item">
-                <span>${hour}:00</span>
-                <img src="${iconUrl}" alt="Hourly Weather Icon">
-                <span>${temperature}°C</span>
-            </div>
-        `;
+        const hourlyItemHtml = `<div class="hourly-item"><span>${hour}:00</span><img src="${iconUrl}" alt="Hourly Weather Icon"><span>${temperature}°C</span></div>`;
 
         hourlyForecastDiv.innerHTML += hourlyItemHtml;
+    });
+}
+
+function displayDailyForecast(hourlyData) {
+    const dailyForecastDiv = document.getElementById('daily-forecast');
+    dailyForecastDiv.innerHTML = ''; // Clear previous content
+
+    const days = {};
+
+    hourlyData.forEach(item => {
+        const date = new Date(item.dt * 1000).toDateString(); // Get date string
+        const temp = item.main.temp - 273.15; // Convert to Celsius
+        const iconCode = item.weather[0].icon;
+
+        if (!days[date]) {
+            days[date] = {
+                minTemp: temp,
+                maxTemp: temp,
+                icon: iconCode
+            };
+        } else {
+            days[date].minTemp = Math.min(days[date].minTemp, temp);
+            days[date].maxTemp = Math.max(days[date].maxTemp, temp);
+        }
+    });
+
+    Object.keys(days).forEach(date => {
+        const day = days[date];
+        const iconUrl = `https://openweathermap.org/img/wn/${day.icon}.png`;
+
+        const dailyItemHtml = `<div class="daily-item"><span>${date}</span><img src="${iconUrl}" alt="Daily Weather Icon"><span>Min: ${Math.round(day.minTemp)}°C</span><span>Max: ${Math.round(day.maxTemp)}°C</span></div>`;
+
+        dailyForecastDiv.innerHTML += dailyItemHtml;
     });
 }
 
@@ -203,7 +210,6 @@ function displayRainForecast(hourlyData) {
     hourlyForecastDiv.innerHTML = rainForecastHTML;
 }
 
-
 function showImage() {
     const weatherIcon = document.getElementById('weather-icon');
     weatherIcon.style.display = 'block'; // Make the image visible once it's loaded
@@ -225,11 +231,8 @@ async function updateSensorData() {
         }
         const floodAlertElement = document.getElementById('floodAlert');
 
-        console.log(data);
-
         if (distance - 20 <= 7) {
             floodAlertElement.style.display = 'block'; // Show flood alert
-
         } else {
             floodAlertElement.style.display = 'none'; // Hide flood alert
         }
@@ -239,3 +242,5 @@ async function updateSensorData() {
 }
 
 setInterval(updateSensorData, 1000);  // Update every second
+
+
