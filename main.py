@@ -11,10 +11,11 @@ setup_scheduler(app)
 def get_water_level_alert():
     with app.app_context():
         from website.models import Sensor, User
-        from website.mqtt_client import get_sensor_reading
+        from website.mqtt_client import get_distance_reading
         print("Running get_water_level_alert")
         try:
-            sensor_reading = get_sensor_reading()
+            sensor_reading = get_distance_reading()
+            print(sensor_reading)
             sensor_reading = json.loads(sensor_reading)
             if not sensor_reading:
                 sensor_reading = 100  # Default high value to avoid false alerts if sensor fails

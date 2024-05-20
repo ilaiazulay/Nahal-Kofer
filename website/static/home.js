@@ -217,25 +217,36 @@ function showImage() {
 
 async function updateSensorData() {
     try {
-        const response = await fetch('/get_sensor_data');
-        const data = await response.json();
-        let distance = data.distance;
+        // Fetch distance sensor data
+        const distanceResponse = await fetch('/get_distance_sensor_data');
+        const distanceData = await distanceResponse.json();
+        console.log(distanceData);
+        let distance = distanceData.distance;
         if (distance !== undefined) {
             distance = parseFloat(distance).toFixed(1);  // Format to one decimal place
-            if (distance - 20 >= 0)
-                document.getElementById('reading').innerHTML = (distance - 20).toFixed(1) + ' cm';
-            else
-                document.getElementById('reading').innerHTML = '0 cm';
+            document.getElementById('reading').innerHTML = `${distance} cm`;
         } else {
             document.getElementById('reading').innerHTML = 'Lost Connection';
         }
-        const floodAlertElement = document.getElementById('floodAlert');
 
-        if (distance - 20 <= 7) {
+        const floodAlertElement = document.getElementById('floodAlert');
+        if (distance <= 27) {
             floodAlertElement.style.display = 'block'; // Show flood alert
         } else {
             floodAlertElement.style.display = 'none'; // Hide flood alert
         }
+
+        // Fetch flow rate sensor data
+        const flowRateResponse = await fetch('/get_flow_sensor_data');
+        const flowRateData = await flowRateResponse.json();
+        let flowRate = flowRateData.flow_rate;
+        if (flowRate !== undefined) {
+            flowRate = parseFloat(flowRate).toFixed(1);  // Format to one decimal place
+            document.getElementById('water_current_reading').innerHTML = `${flowRate} L/min`;
+        } else {
+            document.getElementById('water_current_reading').innerHTML = 'Lost Connection';
+        }
+
     } catch (error) {
         console.error('Error fetching sensor data:', error);
     }
