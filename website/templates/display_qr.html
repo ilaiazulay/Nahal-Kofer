@@ -5,6 +5,8 @@
 <h2>QR Code</h2>
     {% if img_data %}
     <img id="qr-code" src="data:image/png;base64,{{ img_data }}" alt="QR Code">
+    <p id="qr-location">{{ location }}</p>
+    <p id="qr-date">{{ current_date }}</p>
     {% endif %}
     <br />
     <!-- Print Button with Styles -->

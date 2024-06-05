@@ -103,6 +103,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
+                        time: {
+                            unit: 'day'
+                        },
                         title: {
                             display: true,
                             text: 'Date'
@@ -215,6 +218,10 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 scales: {
                     x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        },
                         title: {
                             display: true,
                             text: 'Date'

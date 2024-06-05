@@ -10,7 +10,7 @@ def setup_scheduler(app):
     scheduler.start()
 
     # Pass the app instance directly to the jobs
-    scheduler.add_job(lambda: save_daily_sensor_reading(app), 'cron', hour=13, minute=56, second=0)
+    scheduler.add_job(lambda: save_daily_sensor_reading(app), 'cron', hour=11, minute=55, second=0)
     scheduler.add_job(lambda: check_flood_risk(app), 'cron', hour=13, minute=59, second=0)
     scheduler.add_job(id='Sensor Reading Task', func=lambda: get_water_level_alert(app), trigger='interval', seconds=10)
 
@@ -110,12 +110,13 @@ def get_expected_precipitation(target_date):
 
 
 def save_daily_sensor_reading(app):
+    print("save daily sensor")
     from website import db
     with app.app_context():  # Use the passed app instance for the application context
         from .models import Sensor
-        from .views import get_sensor_reading
+        from .views import get_distance_sensor_data
         try:
-            sensor_data = get_sensor_reading()
+            sensor_data = get_distance_sensor_data()
             sensor_dict = json.loads(sensor_data)
             sensor_value = float(sensor_dict['distance'])
 
@@ -132,8 +133,8 @@ def get_water_level_alert(app):
     from .models import User
     with app.app_context():  # Use the passed app instance for the application context
         from .models import Sensor
-        from .mqtt_client import get_sensor_reading
-        sensor_reading = get_sensor_reading()
+        from .mqtt_client import get_distance_reading
+        sensor_reading = get_distance_reading()
         sensor_reading = json.loads(sensor_reading)
         if not sensor_reading:
             sensor_reading = 0

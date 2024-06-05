@@ -5,7 +5,7 @@ import qrcode
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import func, desc
-from website.mqtt_client import get_distance_reading, get_flow_rate_reading
+from website.mqtt_client import get_distance_reading, get_flow_rate_reading, get_ph_reading
 import numpy as np
 from scipy.stats import pearsonr
 from . import db
@@ -37,6 +37,18 @@ def home():
         flow = 0
     else:
         flow = int(flow["flow_rate"])
+
+    ph = get_ph_reading()
+    try:
+        ph = json.loads(ph)
+        if not ph:
+            ph = 7
+        else:
+            ph = int(ph["ph_value"])
+    except (ValueError, TypeError):
+        if not isinstance(ph, int):
+            ph = 7
+
     today = datetime.utcnow()
     future_date = today + timedelta(days=5)
 
@@ -56,7 +68,7 @@ def home():
         flood_prediction_alert = "No flood alert for the upcoming week."
         color = 'green'
 
-    return render_template("home.html", user=current_user, distance=distance, flow=flow, flood_prediction_alert=flood_prediction_alert, color=color)
+    return render_template("home.html", user=current_user, distance=distance, flow=flow, ph=ph, flood_prediction_alert=flood_prediction_alert, color=color)
 
 
 @views.route('/upload_file', methods=['GET', 'POST'])
@@ -397,7 +409,7 @@ def get_sensors_graph_data():
     elif option == 'Water Level':
         sensors = Sensor.query \
             .with_entities(Sensor.date, Sensor.type, Sensor.value) \
-            .filter(Sensor.date >= start_date, Sensor.date <= end_date, Sensor.type == 'Water Level') \
+            .filter(Sensor.date >= start_date, Sensor.date <= end_date, Sensor.type == 'distance') \
             .all()
 
         for date, type_, value in sensors:
@@ -407,10 +419,24 @@ def get_sensors_graph_data():
             data_dict[location]['dates'].append(date.strftime('%Y-%m-%d'))
             data_dict[location]['values'].append(value)
 
+    elif option == 'Water Current':
+        sensors = Sensor.query \
+            .with_entities(Sensor.date, Sensor.type, Sensor.value) \
+            .filter(Sensor.date >= start_date, Sensor.date <= end_date, Sensor.type == 'flow') \
+            .all()
+
+        for date, type_, value in sensors:
+            location = "Water Current Sensor"  # Assuming there is only one type of water current sensor
+            if location not in data_dict:
+                data_dict[location] = {'dates': [], 'values': []}
+            data_dict[location]['dates'].append(date.strftime('%Y-%m-%d'))
+            data_dict[location]['values'].append(value)
+
     else:
         return jsonify({"error": "Invalid option"}), 400
 
     return jsonify(data_dict)
+
 
 
 @views.route('/get_min_max', methods=['POST'])
@@ -542,6 +568,14 @@ def get_distance_sensor_data():
 @views.route('/get_flow_sensor_data')
 def get_flow_sensor_data():
     current_reading = get_flow_rate_reading()
+    return current_reading
+    # print(current_reading)
+    # return jsonify({"flow_rate": current_reading})
+
+
+@views.route('/get_ph_sensor_data')
+def get_ph_sensor_data():
+    current_reading = get_ph_reading()
     return current_reading
     # print(current_reading)
     # return jsonify({"flow_rate": current_reading})
@@ -777,7 +811,8 @@ def display_qr():
 
         # Assuming generate_qr_code returns a base64-encoded QR code image
         img_data = generate_qr_code(location, current_user.first_name)
-        return render_template('display_qr.html', user=current_user, img_data=img_data)
+        current_date = datetime.utcnow().strftime('%Y-%m-%d')
+        return render_template('display_qr.html', user=current_user, location=location, current_date=current_date, img_data=img_data)
 
     # Handle GET request if necessary
     return render_template('display_qr.html')

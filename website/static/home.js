@@ -223,8 +223,15 @@ async function updateSensorData() {
         console.log(distanceData);
         let distance = distanceData.distance;
         if (distance !== undefined) {
-            distance = parseFloat(distance).toFixed(1);  // Format to one decimal place
-            document.getElementById('reading').innerHTML = `${distance} cm`;
+            if (distance == 1000)
+            {
+                document.getElementById('reading').innerHTML = 'Lost Connection';
+            }
+            else
+            {
+                distance = parseFloat(distance).toFixed(1);  // Format to one decimal place
+                document.getElementById('reading').innerHTML = `${distance} cm`;
+            }
         } else {
             document.getElementById('reading').innerHTML = 'Lost Connection';
         }
@@ -241,10 +248,35 @@ async function updateSensorData() {
         const flowRateData = await flowRateResponse.json();
         let flowRate = flowRateData.flow_rate;
         if (flowRate !== undefined) {
-            flowRate = parseFloat(flowRate).toFixed(1);  // Format to one decimal place
-            document.getElementById('water_current_reading').innerHTML = `${flowRate} L/min`;
+            if (flowRate == 1000)
+            {
+                document.getElementById('water_current_reading').innerHTML = 'Lost Connection';
+            }
+            else
+            {
+                flowRate = parseFloat(flowRate).toFixed(1);  // Format to one decimal place
+                document.getElementById('water_current_reading').innerHTML = `${flowRate} L/min`;
+            }
         } else {
             document.getElementById('water_current_reading').innerHTML = 'Lost Connection';
+        }
+
+        // Fetch ph sensor data
+        const phResponse = await fetch('/get_ph_sensor_data');
+        const phData = await phResponse.json();
+        let ph = phData.ph_value;
+        if (ph !== undefined) {
+            if (ph == 1000)
+            {
+                document.getElementById('ph_reading').innerHTML = 'Lost Connection';
+            }
+            else
+            {
+                ph = parseFloat(ph).toFixed(1);  // Format to one decimal place
+                document.getElementById('ph_reading').innerHTML = `${ph} L/min`;
+            }
+        } else {
+            document.getElementById('ph_reading').innerHTML = 'Lost Connection';
         }
 
     } catch (error) {
