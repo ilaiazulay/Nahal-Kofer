@@ -13,7 +13,7 @@ def generate_qr_code(location, name):
     created_at = datetime.utcnow()
 
     # Generate QR code content as a URL
-    base_url = "http://localhost:5000/submit_test"  # Change 'yourdomain.com' to your actual domain
+    base_url = "https://nahalkofer.us.to/submit_test"  # Change 'yourdomain.com' to your actual domain
     qr_url = f"{base_url}?code={unique_code}&name={name}&qr_created_time={created_at.isoformat()}&location={location}"
 
     # Generate the QR code image
