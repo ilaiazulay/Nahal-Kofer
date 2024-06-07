@@ -725,6 +725,40 @@ body {
 }
 
 
+/* Styles for printing */
+@media print {
+    #qr-code {
+        width: 27mm;
+        height: auto;
+        margin-bottom: 2mm; /* Space between QR code and text */
+    }
+
+    #qr-location, #qr-date {
+        font-size: 10px; /* Adjust font size as needed */
+        margin: 0; /* Remove default margin */
+        text-align: center;
+    }
+
+    /* Adjust container for print */
+    body {
+        width: 29mm;
+        height: 90mm;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2mm;
+    }
+
+    #qr_title {
+        font-size: 10px; /* Adjust font size as needed */
+        margin: 0; /* Remove default margin */
+        text-align: center;
+    }
+}
+
+
+
 
 
 
