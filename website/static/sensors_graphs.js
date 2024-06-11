@@ -1,31 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const byYear = document.getElementById('byYear');
-    const byDateRange = document.getElementById('byDateRange');
-    const yearInput = document.getElementById('year');
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');
     const optionsSelect = document.getElementById("options");
     const graphTitle = document.getElementById("graphTitle");
     const precipitationTitle = document.getElementById("precipitationTitle");
 
-    function updateVisibility() {
-        if (byYear.checked) {
-            yearInput.parentElement.style.display = 'block';
-            startDate.parentElement.style.display = 'none';
-            endDate.parentElement.style.display = 'none';
-            optionsSelect.style.display = 'block';
-        } else if (byDateRange.checked) {
-            yearInput.parentElement.style.display = 'none';
-            startDate.parentElement.style.display = 'block';
-            endDate.parentElement.style.display = 'block';
-            optionsSelect.style.display = 'block';
-        } else {
-            optionsSelect.style.display = 'none';
-        }
-    }
-
-    byYear.addEventListener('change', updateVisibility);
-    byDateRange.addEventListener('change', updateVisibility);
+    // Show date inputs and options by default
+    startDate.parentElement.style.display = 'block';
+    endDate.parentElement.style.display = 'block';
+    optionsSelect.style.display = 'block';
 
     optionsSelect.addEventListener("change", fetchData);
 
@@ -35,29 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
             option: selectedOption
         };
 
-        if (byYear.checked) {
-            if (!yearInput.value) {
-                alert("You have to pick a year.");
-                return;
-            }
-            payload.dateData = { year: yearInput.value };
-            var startDateValue = `${yearInput.value}-01-01`;
-            var endDateValue = `${yearInput.value}-12-31`;
-            fetchPrecipitationData(startDateValue, endDateValue);
-        } else if (byDateRange.checked) {
-            if (!startDate.value || !endDate.value) {
-                alert("You have to pick both a start date and an end date.");
-                return;
-            }
-            fetchPrecipitationData(startDate.value, endDate.value);
-            payload.dateData = {
-                startDate: startDate.value,
-                endDate: endDate.value
-            };
-        } else {
-            alert("Please select a date filtering option.");
+        if (!startDate.value || !endDate.value) {
+            alert("You have to pick both a start date and an end date.");
             return;
         }
+        fetchPrecipitationData(startDate.value, endDate.value);
+        payload.dateData = {
+            startDate: startDate.value,
+            endDate: endDate.value
+        };
 
         fetch('/get_sensors_graph_data', {
             method: 'POST',
@@ -103,9 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
-                        time: {
-                            unit: 'day'
-                        },
                         title: {
                             display: true,
                             text: 'Date'
@@ -123,6 +89,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     legend: {
                         display: true,
                         position: 'top'
+                    },
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'x',
+                        },
+                        zoom: {
+                            wheel: {
+                                enabled: true,
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'x',
+                        }
                     }
                 },
                 responsive: true
@@ -219,9 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
-                        time: {
-                            unit: 'day'
-                        },
                         title: {
                             display: true,
                             text: 'Date'
@@ -239,6 +217,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     legend: {
                         display: true,
                         position: 'top'
+                    },
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'x',
+                        },
+                        zoom: {
+                            wheel: {
+                                enabled: true,
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'x',
+                        }
                     }
                 },
                 responsive: true,

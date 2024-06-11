@@ -6,21 +6,8 @@
 
 <br>
 
-<!-- Selection for date filtering -->
-<div class="date-filter-section">
-    <input type="radio" id="byYear" name="dateFilter" value="byYear">
-    <label for="byYear">By Year</label>
-    <input type="radio" id="byDateRange" name="dateFilter" value="byDateRange">
-    <label for="byDateRange">By Specific Date</label>
-</div>
-
-<!-- Inputs for year and date range that appear based on selection -->
-<div id="yearInput" class="date-input-section hidden">
-    <label for="year">Enter Year:</label>
-    <input type="number" id="year" min="2000">
-</div>
-
-<div id="dateRangeInput" class="date-input-section hidden">
+<!-- Inputs for date range -->
+<div id="dateRangeInput" class="date-input-section">
     <label for="startDate">Start Date:</label>
     <input type="date" id="startDate">
     <label for="endDate">End Date:</label>
@@ -35,17 +22,17 @@
   <option value="Water Current">Water Current</option>
 </select>
 
+<div class="graphs-container">
+    <div class="centered-container">
+        <h2 id="graphTitle"></h2>
+        <canvas id="graph"></canvas>
+    </div>
 
-<div class="centered-container">
-    <h2 id="graphTitle"></h2>
-    <canvas id="graph"></canvas>
+    <div class="centered-container">
+        <h2 id="precipitationTitle"></h2>
+        <canvas id="precipitationGraph"></canvas>
+    </div>
 </div>
-
-<div class="centered-container">
-    <h2 id="precipitationTitle"></h2>
-    <canvas id="precipitationGraph"></canvas>
-</div>
-
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <!-- JavaScript to handle the selection and render the graph -->

@@ -469,8 +469,8 @@ def get_min_max():
         .all()
 
     labels = [location for location, _, _ in results]
-    mins = [round(min_value, 2) if min_value is not None else 0 for _, min_value, _ in results]
-    maxs = [round(max_value, 2) if max_value is not None else 0 for _, _, max_value in results]
+    mins = [round(float(min_value), 2) if min_value and min_value != '' else 0 for _, min_value, _ in results]
+    maxs = [round(float(max_value), 2) if max_value and max_value != '' else 0 for _, _, max_value in results]
     print(labels, mins, maxs)
 
     return jsonify(labels=labels, mins=mins, maxs=maxs)

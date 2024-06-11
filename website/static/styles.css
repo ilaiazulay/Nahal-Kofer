@@ -208,7 +208,7 @@ select:focus {
     margin-right: 5px;
 }
 
-/* Style for input fields and labels within date selection */
+/* Style for input fields and labels within date selection
 .date-input-section {
     display: flex;
     align-items: center;
@@ -226,6 +226,7 @@ select:focus {
     border-radius: 4px;
     width: 100%;
 }
+*/
 
 /* Specific styles for hidden sections to smoothly transition */
 .hidden {
@@ -756,6 +757,74 @@ body {
         text-align: center;
     }
 }
+
+.date-input-section {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the start of the container */
+    margin-top: 10px;
+}
+
+.date-input-section label {
+    margin-bottom: 5px; /* Space between label and input */
+    min-width: 100px;
+}
+
+.date-input-section input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Make input take up full width */
+    margin-bottom: 10px; /* Space between inputs */
+}
+
+.centered-container {
+    display: flex;
+    flex-direction: column;  /* Stacks items vertically */
+    align-items: center;     /* Centers items horizontally */
+    justify-content: center; /* Centers items vertically, useful if there's extra space */
+    width: 100%;             /* Ensures the container takes full width */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.graphs-container {
+    display: flex;           /* Display items in a row */
+    justify-content: space-around; /* Space out the graphs evenly */
+    width: 100%;             /* Take up the full width of the container */
+    flex-wrap: wrap;         /* Allow graphs to wrap to the next line if necessary */
+}
+
+.graph-item {
+    flex: 1;                 /* Allow graphs to take equal space */
+    min-width: 300px;        /* Minimum width of each graph */
+    margin: 10px;            /* Margin around each graph */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+canvas {
+    width: 100% !important; /* Ensures canvas takes up the full container width */
+    height: 400px !important; /* Adjust height as needed */
+}
+
+.graphs-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.centered-container {
+    flex: 1;
+    margin: 20px;
+}
+
+canvas {
+    width: 100% !important; /* Ensures canvas takes up the full container width */
+    height: 400px !important; /* Adjust height as needed */
+}
+
+
 
 
 
