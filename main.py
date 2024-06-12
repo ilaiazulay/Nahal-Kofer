@@ -4,6 +4,7 @@ import time
 import threading
 from datetime import datetime, timedelta
 
+import numpy as np
 import requests
 from sqlalchemy import desc
 
@@ -139,7 +140,6 @@ def save_daily_sensor_reading():
                 print("Saved daily pH reading:", new_lab_test.ph)
         except Exception as e:
             print("Failed to save daily pH reading:", e)
-
 
 
 def check_flood_risk():
