@@ -4,29 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const optionsSelect = document.getElementById("options");
     const graphTitle = document.getElementById("graphTitle");
     const precipitationTitle = document.getElementById("precipitationTitle");
-
-    // Show date inputs and options by default
-    startDate.parentElement.style.display = 'block';
-    endDate.parentElement.style.display = 'block';
-    optionsSelect.style.display = 'block';
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomSliderContainer = document.getElementById('zoomSliderContainer');
 
     optionsSelect.addEventListener("change", fetchData);
+    zoomSlider.addEventListener('input', handleZoom);
 
     function fetchData() {
         var selectedOption = optionsSelect.value;
         var payload = {
-            option: selectedOption
+            option: selectedOption,
+            dateData: {
+                startDate: startDate.value,
+                endDate: endDate.value
+            }
         };
 
         if (!startDate.value || !endDate.value) {
             alert("You have to pick both a start date and an end date.");
             return;
         }
+
         fetchPrecipitationData(startDate.value, endDate.value);
-        payload.dateData = {
-            startDate: startDate.value,
-            endDate: endDate.value
-        };
 
         fetch('/get_sensors_graph_data', {
             method: 'POST',
@@ -72,10 +71,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
+                        time: {
+                            unit: 'day'
+                        },
                         title: {
                             display: true,
                             text: 'Date'
-                        }
+                        },
+                        min: startDate.value,
+                        max: endDate.value
                     },
                     y: {
                         beginAtZero: true,
@@ -92,23 +96,72 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
-                            mode: 'x',
+                            enabled: false,
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false
                             },
                             mode: 'x',
+                            onZoomComplete: syncCharts
                         }
                     }
                 },
                 responsive: true
             }
         });
+    }
+
+    function handleZoom(event) {
+        const zoomLevel = event.target.value;
+        const min = parseInt(zoomSlider.min);
+        const max = parseInt(zoomSlider.max);
+        const scale = 1 + (zoomLevel - min) / (max - min) * 9;
+
+        zoomChart(window.myChart, scale);
+        zoomChart(window.precipitationChart, scale);
+    }
+
+    function zoomChart(chart, scale) {
+        if (!chart) return;
+        const { min: initialMin, max: initialMax } = chart.scales.x.originalRange || {
+            min: chart.scales.x.min,
+            max: chart.scales.x.max
+        };
+
+        if (!chart.scales.x.originalRange) {
+            chart.scales.x.originalRange = { min: initialMin, max: initialMax };
+        }
+
+        const range = initialMax - initialMin;
+        const newRange = range / scale;
+        const newMin = initialMin + (range - newRange) / 2;
+        const newMax = initialMax - (range - newRange) / 2;
+
+        chart.scales.x.options.min = newMin;
+        chart.scales.x.options.max = newMax;
+        chart.update();
+    }
+
+    function syncCharts({ chart }) {
+        const xScale = chart.scales.x;
+        const newMin = xScale.min;
+        const newMax = xScale.max;
+
+        if (window.precipitationChart && window.precipitationChart !== chart) {
+            window.precipitationChart.scales.x.options.min = newMin;
+            window.precipitationChart.scales.x.options.max = newMax;
+            window.precipitationChart.update();
+        }
+
+        if (window.myChart && window.myChart !== chart) {
+            window.myChart.scales.x.options.min = newMin;
+            window.myChart.scales.x.options.max = newMax;
+            window.myChart.update();
+        }
     }
 
     function generateBackgroundColor(index) {
@@ -154,15 +207,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            console.log('Precipitation data:', data);
-            displayPrecipitationGraph(data);
+            displayPrecipitationGraph(data, startDate, endDate);
         })
         .catch(error => {
             console.error('Error fetching precipitation data:', error);
         });
     }
 
-    function displayPrecipitationGraph(data) {
+    function displayPrecipitationGraph(data, startDate, endDate) {
         var labels = [];
         var precipitationData = [];
 
@@ -172,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (data && data.results) {
             data.results.forEach(result => {
-                labels.push(result.date);
+                labels.push(result.date.split('T')[0]); // Only display the date
                 precipitationData.push(result.value);
             });
         }
@@ -200,10 +252,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
+                        time: {
+                            unit: 'day' // Show only the date on the x-axis
+                        },
                         title: {
                             display: true,
                             text: 'Date'
-                        }
+                        },
+                        min: startDate,
+                        max: endDate
                     },
                     y: {
                         beginAtZero: true,
@@ -220,17 +277,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
-                            mode: 'x',
+                            enabled: false,
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false
                             },
                             mode: 'x',
+                            onZoomComplete: syncCharts
                         }
                     }
                 },
@@ -239,4 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Initialize the charts and fetch data when the page loads
+    fetchData();
 });

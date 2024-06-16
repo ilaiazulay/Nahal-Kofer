@@ -7,11 +7,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const MinMaxTitle = document.getElementById("MinMaxTitle");
     const barChartRadio = document.getElementById('barChart');
     const lineChartRadio = document.getElementById('lineChart');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomSliderContainer = document.getElementById('zoomSliderContainer');
 
     optionsSelect.addEventListener("change", fetchData);
 
-    barChartRadio.addEventListener('change', fetchData);
-    lineChartRadio.addEventListener('change', fetchData);
+    barChartRadio.addEventListener('change', function() {
+        zoomSliderContainer.classList.add('hidden');
+        zoomSlider.value = 0;  // Reset the slider
+        fetchData();
+    });
+
+    lineChartRadio.addEventListener('change', function() {
+        zoomSliderContainer.classList.remove('hidden');
+        zoomSlider.value = 0;  // Reset the slider
+        fetchData();
+    });
+
+    zoomSlider.addEventListener('input', handleZoom);
 
     function fetchData() {
         var selectedOption = optionsSelect.value;
@@ -144,6 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
+                        time: {
+                            unit: 'day'  // Show only the date on the x-axis
+                        },
                         title: {
                             display: true,
                             text: 'Date'
@@ -164,15 +180,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
-                            mode: 'x',
+                            enabled: false,  // Disable direct pan
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,  // Disable direct wheel zoom
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false  // Disable direct pinch zoom
                             },
                             mode: 'x',
                         }
@@ -181,6 +196,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 responsive: true
             }
         });
+    }
+
+    function handleZoom(event) {
+        const zoomLevel = event.target.value;
+        const min = parseInt(zoomSlider.min);
+        const max = parseInt(zoomSlider.max);
+        const scale = 1 + (zoomLevel - min) / (max - min) * 9; // Scale factor from 1 to 10
+
+        zoomChart(window.myChart, scale);
+        zoomChart(window.precipitationChart, scale);
+    }
+
+    function zoomChart(chart, scale) {
+        if (!chart) return;
+        const { min: initialMin, max: initialMax } = chart.scales.x.originalRange || {
+            min: chart.scales.x.min,
+            max: chart.scales.x.max
+        };
+
+        // Store the initial range if not already stored
+        if (!chart.scales.x.originalRange) {
+            chart.scales.x.originalRange = { min: initialMin, max: initialMax };
+        }
+
+        const range = initialMax - initialMin;
+        const newRange = range / scale;
+        const newMin = initialMin + (range - newRange) / 2;
+        const newMax = initialMax - (range - newRange) / 2;
+
+        chart.scales.x.options.min = newMin;
+        chart.scales.x.options.max = newMax;
+        chart.update();
     }
 
     function generateBackgroundColor(index) {
@@ -303,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (data && data.results) {
             data.results.forEach(result => {
-                labels.push(result.date);
+                labels.push(result.date.split('T')[0]); // Only display the date
                 precipitationData.push(result.value);
             });
         }
@@ -330,6 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 scales: {
                     x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'  // Show only the date on the x-axis
+                        },
                         title: {
                             display: true,
                             text: 'Date'
@@ -350,15 +401,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
-                            mode: 'x',
+                            enabled: false,  // Disable direct pan
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,  // Disable direct wheel zoom
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false  // Disable direct pinch zoom
                             },
                             mode: 'x',
                         }

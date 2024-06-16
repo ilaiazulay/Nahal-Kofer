@@ -32,6 +32,7 @@
                     <a class="nav-item nav-link {% if request.path == '/' %}active{% endif %}" id="home" href="/">Home</a>
                     {% if user.category == 'Lab' %}
                     <a class="nav-item nav-link {% if request.path == '/upload_file' %}active{% endif %}" id="upload_file" href="/upload_file">Upload Test File</a>
+                    <a class="nav-item nav-link {% if request.path == '/lab_tests' %}active{% endif %}" id="lab_tests" href="/lab_tests">Lab Tests</a>
                     <a class="nav-item nav-link {% if request.path == '/locations' %}active{% endif %}" id="locations" href="/locations">Locations</a>
                     <a class="nav-item nav-link {% if request.path == '/generate_qr_code' %}active{% endif %}" id="generate_qr_code" href="/generate_qr_code">New Test Process</a>
                     <a class="nav-item nav-link {% if request.path == '/submit_test' %}active{% endif %}" id="submit_test" href="/submit_test">Add Test Results</a>
