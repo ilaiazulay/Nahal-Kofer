@@ -7,11 +7,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const zoomSlider = document.getElementById('zoomSlider');
     const zoomSliderContainer = document.getElementById('zoomSliderContainer');
 
-    optionsSelect.addEventListener("change", fetchData);
+    optionsSelect.addEventListener("change", function() {
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
+
+    startDate.addEventListener("change", function() {
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
+
+    endDate.addEventListener("change", function() {
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
+
     zoomSlider.addEventListener('input', handleZoom);
 
     function fetchData() {
         var selectedOption = optionsSelect.value;
+
+        if (!selectedOption) {
+            alert("You have to pick a parameter.");
+            return;
+        }
+
+        if (!startDate.value || !endDate.value) {
+            alert("You have to pick both a start date and an end date.");
+            return;
+        }
+
         var payload = {
             option: selectedOption,
             dateData: {
@@ -19,11 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 endDate: endDate.value
             }
         };
-
-        if (!startDate.value || !endDate.value) {
-            alert("You have to pick both a start date and an end date.");
-            return;
-        }
 
         fetchPrecipitationData(startDate.value, endDate.value);
 
@@ -296,7 +319,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // Initialize the charts and fetch data when the page loads
-    fetchData();
 });

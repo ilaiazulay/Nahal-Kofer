@@ -10,37 +10,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const zoomSlider = document.getElementById('zoomSlider');
     const zoomSliderContainer = document.getElementById('zoomSliderContainer');
 
-    optionsSelect.addEventListener("change", fetchData);
+    optionsSelect.addEventListener("change", function() {
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
 
     barChartRadio.addEventListener('change', function() {
         zoomSliderContainer.classList.add('hidden');
         zoomSlider.value = 0;  // Reset the slider
-        fetchData();
+        if (optionsSelect.value) {
+            fetchData();
+        }
     });
 
     lineChartRadio.addEventListener('change', function() {
         zoomSliderContainer.classList.remove('hidden');
         zoomSlider.value = 0;  // Reset the slider
-        fetchData();
+        if (optionsSelect.value) {
+            fetchData();
+        }
     });
 
     zoomSlider.addEventListener('input', handleZoom);
 
     function fetchData() {
         var selectedOption = optionsSelect.value;
-        var payload = {
-            option: selectedOption
-        };
+
+        if (!selectedOption) {
+            alert("You have to pick a parameter.");
+            return;
+        }
 
         if (!startDate.value || !endDate.value) {
             alert("You have to pick both a start date and an end date.");
             return;
         }
-        fetchPrecipitationData(startDate.value, endDate.value);
-        payload.dateData = {
-            startDate: startDate.value,
-            endDate: endDate.value
+
+        var payload = {
+            option: selectedOption,
+            dateData: {
+                startDate: startDate.value,
+                endDate: endDate.value
+            }
         };
+
+        fetchPrecipitationData(startDate.value, endDate.value);
 
         if (barChartRadio.checked) {
             fetch('/get_graph_data', {
@@ -163,7 +178,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         title: {
                             display: true,
                             text: 'Date'
-                        }
+                        },
+                        min: startDate.value,
+                        max: endDate.value
                     },
                     y: {
                         beginAtZero: true,
@@ -190,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 enabled: false  // Disable direct pinch zoom
                             },
                             mode: 'x',
+                            onZoomComplete: syncCharts
                         }
                     }
                 },
@@ -228,6 +246,24 @@ document.addEventListener('DOMContentLoaded', function() {
         chart.scales.x.options.min = newMin;
         chart.scales.x.options.max = newMax;
         chart.update();
+    }
+
+    function syncCharts({ chart }) {
+        const xScale = chart.scales.x;
+        const newMin = xScale.min;
+        const newMax = xScale.max;
+
+        if (window.precipitationChart && window.precipitationChart !== chart) {
+            window.precipitationChart.scales.x.options.min = newMin;
+            window.precipitationChart.scales.x.options.max = newMax;
+            window.precipitationChart.update();
+        }
+
+        if (window.myChart && window.myChart !== chart) {
+            window.myChart.scales.x.options.min = newMin;
+            window.myChart.scales.x.options.max = newMax;
+            window.myChart.update();
+        }
     }
 
     function generateBackgroundColor(index) {
@@ -332,15 +368,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            console.log('Precipitation data:', data);
-            displayPrecipitationGraph(data);
+            displayPrecipitationGraph(data, startDate, endDate);
         })
         .catch(error => {
             console.error('Error fetching precipitation data:', error);
         });
     }
 
-    function displayPrecipitationGraph(data) {
+    function displayPrecipitationGraph(data, startDate, endDate) {
         var labels = [];
         var precipitationData = [];
 
@@ -379,12 +414,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     x: {
                         type: 'time',
                         time: {
-                            unit: 'day'  // Show only the date on the x-axis
+                            unit: 'day' // Show only the date on the x-axis
                         },
                         title: {
                             display: true,
                             text: 'Date'
-                        }
+                        },
+                        min: startDate,
+                        max: endDate
                     },
                     y: {
                         beginAtZero: true,
@@ -401,16 +438,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     zoom: {
                         pan: {
-                            enabled: false,  // Disable direct pan
+                            enabled: false,
                         },
                         zoom: {
                             wheel: {
-                                enabled: false,  // Disable direct wheel zoom
+                                enabled: false,
                             },
                             pinch: {
-                                enabled: false  // Disable direct pinch zoom
+                                enabled: false
                             },
                             mode: 'x',
+                            onZoomComplete: syncCharts
                         }
                     }
                 },
@@ -419,4 +457,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    function syncCharts({ chart }) {
+        const xScale = chart.scales.x;
+        const newMin = xScale.min;
+        const newMax = xScale.max;
+
+        if (window.precipitationChart && window.precipitationChart !== chart) {
+            window.precipitationChart.scales.x.options.min = newMin;
+            window.precipitationChart.scales.x.options.max = newMax;
+            window.precipitationChart.update();
+        }
+
+        if (window.myChart && window.myChart !== chart) {
+            window.myChart.scales.x.options.min = newMin;
+            window.myChart.scales.x.options.max = newMax;
+            window.myChart.update();
+        }
+    }
+
+    // Initialize the charts and fetch data when the page loads
 });
