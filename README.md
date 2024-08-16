@@ -1,67 +1,62 @@
-# Payroll Calculator for Hi-Tech Company
+# Nahal Kofer Environmental Monitoring System
 
-**Note: This is an early stage built. The application is currently in the testing phase and is tailored specifically to meet the unique requirements of a hi-tech company. It is not intended for general use and may not be suitable for applications outside of the specified conditions.**
+### Website URL: [Nahal Kofer](https://nahalkofer.us.to/)
 
 ## Overview
 
-This Python project is a payroll calculator designed to meet the custom needs of a specific hi-tech company. It utilizes Flask for the web framework, SQLite for data storage, and includes various conditions and variables for accurate payroll calculations.
+The Nahal Kofer Environmental Monitoring System is designed to monitor and predict environmental conditions along the Kofer River. This project focuses on the integration of sensor data, flood prediction models, and data visualization tools to provide real-time insights into the river's conditions. The system allows users to access sensor data, generate QR codes for sample tracking, and view environmental data trends through a web-based interface.
 
-## Prerequisites
+## Features
 
-Before using this payroll calculator, ensure you have the following dependencies installed:
+- **User Authentication**: Secure user login to protect data access.
+- **Flood Prediction**: Machine learning model to predict flood events based on water level, water opacity, and precipitation data.
+- **Sensor Integration**: Real-time monitoring using water level, water current, and pH sensors.
+- **Data Visualization**: Interactive graphs and charts displaying trends in environmental data.
+- **QR Code Generation**: Generate and manage QR codes for tracking water samples.
+- **Alerts**: Email alerts for potential flood conditions based on sensor data.
+- **Deployment**: Deployed on AWS EC2 instance for scalability and reliability.
 
-- Python 3.x
-- Flask
-- SQLite
+## Technology Stack
 
-You can install the required dependencies using the following command:
-
-```bash
-pip install -r requirements.txt
-```
+- **Frontend**: HTML5, CSS3, JavaScript (with Chart.js for data visualization)
+- **Backend**: Flask (Python) for web application logic
+- **Database**: SQLite for data storage, enabling easy transition to a larger database system in the future
+- **Machine Learning**: TensorFlow and Keras for flood prediction models
+- **Deployment**: AWS EC2 for hosting, with secure access through SSL
 
 ## Installation
-1. Clone the repository:
 
-```bash
-git clone https://github.com/your-username/your-project.git
-```
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/ilaiazulay/Nahal-Kofer.git
+   cd Nahal-Kofer
+   ```
 
-2. Change into the project directory:
+2. **Set Up the Environment**:
+   - Install Python dependencies:
+     ```bash
+     pip install -r requirements.txt
+     ```
+   - Set up the SQLite database:
+     ```bash
+     python manage.py db_init
+     ```
 
-```bash
-cd your-project
-```
+3. **Run the Application**:
+   ```bash
+   python app.py
+   ```
 
-3. Install dependencies:
+4. **Access the Website**:
+   - Navigate to `http://localhost:8000` to access the website locally.
 
-```bash
-pip install -r requirements.txt
-```
-
-4. Run the application:
-
-```bash
-python app.py
-```
-
-## Configuration
-To configure the project for your specific needs:
-
-- Set up the database by running any necessary migration scripts.
-- Adjust environment variables or configuration files as needed.
-  
 ## Usage
 
-### Sign Up / Login:
-- Upon first use, sign up using your email and password.
-- Log in with your credentials if you already have an account.
-### Home Screen:
-- View all the shifts associated with your account.
-- Add new shifts or delete existing ones.
-### Calculate Salary:
-- Navigate to the "Calculate Salary" page to compute your salary for a specific time period.
-- The calculator follows the hi-tech company's rules for salary calculations.
+- **Login**: Register or log in to access the dashboard.
+- **Monitor**: View real-time data from the sensors and check for flood predictions.
+- **Data Visualization**: Generate and view graphs for pH levels, water levels, and other environmental parameters.
+- **Sample Tracking**: Use the QR code feature to track and manage water samples.
 
-## Database
-This project uses SQLite for data storage. Be sure to check and configure the database connections as needed.
+## Contact
+
+For any inquiries, please contact [ilaiazulay](https://github.com/ilaiazulay).
