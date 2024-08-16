@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/8bf82f7e-2ae0-4d3f-b525-cf486692c764)# Nahal Kofer Environmental Monitoring System
-
 ### Website URL: [Nahal Kofer](https://nahalkofer.us.to/)
 
 ## Overview
@@ -57,6 +55,7 @@ The website contains a secret key and is restricted to use by authorized personn
 ## Screenshots
 
 **Monitoring Dashboard**
+
 ![image](https://github.com/user-attachments/assets/7167f434-dc42-423b-890b-0466aa55f951)
 ![image](https://github.com/user-attachments/assets/5f83a5ba-ab3c-4289-aedc-43dd2a48bf32)
 
@@ -66,18 +65,18 @@ The website contains a secret key and is restricted to use by authorized personn
 ![image](https://github.com/user-attachments/assets/8f365ac4-7ab0-41eb-a17b-aa145cd3a895)
 
 **QR Code Generation**
+
 ![image](https://github.com/user-attachments/assets/69631348-a278-4abf-8e02-fa7ca1caf34c)
 ![image](https://github.com/user-attachments/assets/601a5d3f-6140-48c0-a663-2a903fa3a80d)
 ![image](https://github.com/user-attachments/assets/410ccf92-78d0-43bb-bf12-c822bce22a69)
 ![image](https://github.com/user-attachments/assets/4c62bb57-332d-4a6a-9450-4c71dd52f508)
 
 **Graphs**
+
 ![image](https://github.com/user-attachments/assets/46166673-3adc-4190-9f80-9cca19865aad)
 ![image](https://github.com/user-attachments/assets/dfb5204d-0c45-4fa1-8cf8-04548fd78890)
 ![image](https://github.com/user-attachments/assets/e1401d16-b120-4f96-8f86-53d18e2a5ae8)
 ![image](https://github.com/user-attachments/assets/796471ea-aa43-4bb8-adf2-ba34944ed324)
-
-
 
 ## Usage
 
