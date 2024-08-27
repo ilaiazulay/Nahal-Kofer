@@ -218,6 +218,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataTypeId = 'PRCP';
         const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
 
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const precipitationGraph = document.getElementById('precipitationGraph');
+
+        // Clear the previous precipitation graph
+        if (window.precipitationChart) {
+            window.precipitationChart.destroy();
+        }
+        precipitationGraph.getContext('2d').clearRect(0, 0, precipitationGraph.width, precipitationGraph.height);
+
+        loadingSpinner.classList.remove('hidden');
+
         fetch(url, {
             headers: {
                 'token': token
@@ -231,9 +242,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             displayPrecipitationGraph(data, startDate, endDate);
+            loadingSpinner.classList.add('hidden');
         })
         .catch(error => {
             console.error('Error fetching precipitation data:', error);
+            setTimeout(() => {
+                fetchPrecipitationData(startDate, endDate);
+            }, 3000); // Retry after 3 seconds
         });
     }
 
@@ -241,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var labels = [];
         var precipitationData = [];
 
-        if(precipitationTitle) {
+        if (precipitationTitle) {
             precipitationTitle.textContent = `Precipitation Data`;
         }
 

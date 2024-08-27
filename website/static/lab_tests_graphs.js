@@ -349,114 +349,131 @@ document.addEventListener('DOMContentLoaded', function() {
         minMaxContainer.appendChild(table);
     }
 
-    function fetchPrecipitationData(startDate, endDate) {
-        const token = 'EhbOAoVcydnYoYpiFFwDAFzfqNVJcNfW';
-        const stationId = 'GHCND:USW00094728';
-        const datasetId = 'GHCND';
-        const dataTypeId = 'PRCP';
-        const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
+function fetchPrecipitationData(startDate, endDate) {
+    const token = 'EhbOAoVcydnYoYpiFFwDAFzfqNVJcNfW';
+    const stationId = 'GHCND:USW00094728';
+    const datasetId = 'GHCND';
+    const dataTypeId = 'PRCP';
+    const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
 
-        fetch(url, {
-            headers: {
-                'token': token
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            displayPrecipitationGraph(data, startDate, endDate);
-        })
-        .catch(error => {
-            console.error('Error fetching precipitation data:', error);
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const precipitationGraph = document.getElementById('precipitationGraph');
+
+    // Clear the previous precipitation graph
+    if (window.precipitationChart) {
+        window.precipitationChart.destroy();
+    }
+    precipitationGraph.getContext('2d').clearRect(0, 0, precipitationGraph.width, precipitationGraph.height);
+
+    loadingSpinner.classList.remove('hidden');
+
+    fetch(url, {
+        headers: {
+            'token': token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        displayPrecipitationGraph(data, startDate, endDate);
+        loadingSpinner.classList.add('hidden');
+    })
+    .catch(error => {
+        console.error('Error fetching precipitation data:', error);
+        setTimeout(() => {
+            fetchPrecipitationData(startDate, endDate);
+        }, 3000); // Retry after 3 seconds
+    });
+}
+
+function displayPrecipitationGraph(data, startDate, endDate) {
+    var labels = [];
+    var precipitationData = [];
+
+    if (precipitationTitle) {
+        precipitationTitle.textContent = `Precipitation Data`;
+    }
+
+    if (data && data.results) {
+        data.results.forEach(result => {
+            labels.push(result.date.split('T')[0]); // Only display the date
+            precipitationData.push(result.value);
         });
     }
 
-    function displayPrecipitationGraph(data, startDate, endDate) {
-        var labels = [];
-        var precipitationData = [];
+    var ctx = document.getElementById('precipitationGraph').getContext('2d');
+    if (window.precipitationChart) {
+        window.precipitationChart.destroy();
+    }
 
-        if(precipitationTitle) {
-            precipitationTitle.textContent = `Precipitation Data`;
-        }
-
-        if (data && data.results) {
-            data.results.forEach(result => {
-                labels.push(result.date.split('T')[0]); // Only display the date
-                precipitationData.push(result.value);
-            });
-        }
-
-        var ctx = document.getElementById('precipitationGraph').getContext('2d');
-        if (window.precipitationChart) {
-            window.precipitationChart.destroy();
-        }
-
-        window.precipitationChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Daily Precipitation (mm)',
-                    data: precipitationData,
-                    backgroundColor: 'rgba(66, 135, 245, 0.2)',
-                    borderColor: 'rgba(66, 135, 245, 1)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    fill: true
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'day' // Show only the date on the x-axis
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        },
-                        min: startDate,
-                        max: endDate
+    window.precipitationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Daily Precipitation (mm)',
+                data: precipitationData,
+                backgroundColor: 'rgba(66, 135, 245, 0.2)',
+                borderColor: 'rgba(66, 135, 245, 1)',
+                borderWidth: 1,
+                pointRadius: 2,
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day' // Show only the date on the x-axis
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Precipitation (mm)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
+                    title: {
                         display: true,
-                        position: 'top'
+                        text: 'Date'
+                    },
+                    min: startDate,
+                    max: endDate
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Precipitation (mm)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                zoom: {
+                    pan: {
+                        enabled: false,
                     },
                     zoom: {
-                        pan: {
+                        wheel: {
                             enabled: false,
                         },
-                        zoom: {
-                            wheel: {
-                                enabled: false,
-                            },
-                            pinch: {
-                                enabled: false
-                            },
-                            mode: 'x',
-                            onZoomComplete: syncCharts
-                        }
+                        pinch: {
+                            enabled: false
+                        },
+                        mode: 'x',
+                        onZoomComplete: syncCharts
                     }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+
 
     function syncCharts({ chart }) {
         const xScale = chart.scales.x;

@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <br />
-<h2>Graphs</h2>
+<h2>Lab Tests Graphs</h2>
 <br>
 
 <!-- Inputs for date range -->
@@ -79,9 +79,10 @@
     <canvas id="graph"></canvas>
 </div>
 
-<div class="centered-container">
+<div class="centered-container" id="precipitationGraphContainer">
     <h2 id="precipitationTitle"></h2>
     <canvas id="precipitationGraph"></canvas>
+    <div id="loadingSpinner" class="spinner hidden"></div>
 </div>
 
 <div id="zoomSliderContainer" class="hidden">

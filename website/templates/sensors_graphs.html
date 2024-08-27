@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <br />
-<h2>Graphs</h2>
+<h2>Sensors Graphs</h2>
 
 <br>
 
@@ -27,11 +27,12 @@
         <h2 id="graphTitle"></h2>
         <canvas id="graph"></canvas>
     </div>
+</div>
 
-    <div class="centered-container">
-        <h2 id="precipitationTitle"></h2>
-        <canvas id="precipitationGraph"></canvas>
-    </div>
+<div class="centered-container" id="precipitationGraphContainer">
+    <h2 id="precipitationTitle"></h2>
+    <canvas id="precipitationGraph"></canvas>
+    <div id="loadingSpinner" class="spinner hidden"></div>
 </div>
 
 <div id="zoomSliderContainer">

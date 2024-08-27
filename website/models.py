@@ -33,6 +33,11 @@ class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, unique=True)
     prediction = db.Column(db.Boolean, default=False)
+    water_level_distance = db.Column(db.Float, nullable=True)
+    water_opacity = db.Column(db.Float, nullable=True)
+    precipitation = db.Column(db.Float, nullable=True)
+
+
 
 
 class LabTest(db.Model):
