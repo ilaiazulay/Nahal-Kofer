@@ -2,8 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <br />
-<h2>Graphs</h2>
-
+<h2>Lab Tests Graphs</h2>
 <br>
 
 <!-- Inputs for date range -->
@@ -75,15 +74,20 @@
     <label for="lineChart" class="styled-label">Line Chart</label>
 </div>
 
-<div class="graphs-container">
-    <div class="graph-item">
-        <h2 id="graphTitle"></h2>
-        <canvas id="graph"></canvas>
-    </div>
-    <div class="graph-item">
-        <h2 id="precipitationTitle"></h2>
-        <canvas id="precipitationGraph"></canvas>
-    </div>
+<div class="centered-container">
+    <h2 id="graphTitle"></h2>
+    <canvas id="graph"></canvas>
+</div>
+
+<div class="centered-container" id="precipitationGraphContainer">
+    <h2 id="precipitationTitle"></h2>
+    <canvas id="precipitationGraph"></canvas>
+    <div id="loadingSpinner" class="spinner hidden"></div>
+</div>
+
+<div id="zoomSliderContainer" class="hidden">
+    <label for="zoomSlider">Zoom Level:</label>
+    <input type="range" id="zoomSlider" min="0" max="100" value="0">
 </div>
 
 <div class="min-max-container">

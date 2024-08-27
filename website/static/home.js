@@ -151,6 +151,12 @@ async function updateSensorData() {
             else
             {
                 distance = parseFloat(distance).toFixed(1);  // Format to one decimal place
+                distance -= 20;
+                if(distance < 0)
+                {
+                    distance = 0;
+                }
+                distance = distance.toFixed(1);
                 document.getElementById('reading').innerHTML = `${distance} cm`;
             }
         } else {
@@ -158,7 +164,7 @@ async function updateSensorData() {
         }
 
         const floodAlertElement = document.getElementById('floodAlert');
-        if (distance <= 27) {
+        if (distance <= 7) {
             floodAlertElement.style.display = 'block'; // Show flood alert
         } else {
             floodAlertElement.style.display = 'none'; // Hide flood alert

@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <br />
-<h2>Graphs</h2>
+<h2>Sensors Graphs</h2>
 
 <br>
 
@@ -15,7 +15,7 @@
 </div>
 
 <br>
-<select id="options" class="hidden">
+<select id="options">
   <option value="" disabled selected>Parameter</option>
   <option value="PH">PH</option>
   <option value="Water Level">Water Level</option>
@@ -27,11 +27,17 @@
         <h2 id="graphTitle"></h2>
         <canvas id="graph"></canvas>
     </div>
+</div>
 
-    <div class="centered-container">
-        <h2 id="precipitationTitle"></h2>
-        <canvas id="precipitationGraph"></canvas>
-    </div>
+<div class="centered-container" id="precipitationGraphContainer">
+    <h2 id="precipitationTitle"></h2>
+    <canvas id="precipitationGraph"></canvas>
+    <div id="loadingSpinner" class="spinner hidden"></div>
+</div>
+
+<div id="zoomSliderContainer">
+    <label for="zoomSlider">Zoom Level:</label>
+    <input type="range" id="zoomSlider" min="0" max="100" value="0">
 </div>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">

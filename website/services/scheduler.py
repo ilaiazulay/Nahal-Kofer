@@ -70,7 +70,6 @@ def get_water_level():
 
 def get_water_opacity():
     from website.models import LabTest
-    from sqlalchemy import not_
     # Fetch the most recent LabTest where ntu is not null
     latest_lab_test = LabTest.query.filter(LabTest.ntu.isnot(None)).order_by(desc(LabTest.sample_date)).first()
     if latest_lab_test:
@@ -114,7 +113,7 @@ def save_daily_sensor_reading(app):
     from website import db
     with app.app_context():  # Use the passed app instance for the application context
         from .models import Sensor
-        from .views import get_distance_sensor_data
+        from website.views.views import get_distance_sensor_data
         try:
             sensor_data = get_distance_sensor_data()
             sensor_dict = json.loads(sensor_data)
@@ -132,8 +131,7 @@ def get_water_level_alert(app):
     print("get_water_level_alert")
     from .models import User
     with app.app_context():  # Use the passed app instance for the application context
-        from .models import Sensor
-        from .mqtt_client import get_distance_reading
+        from website.services.mqtt_client import get_distance_reading
         sensor_reading = get_distance_reading()
         sensor_reading = json.loads(sensor_reading)
         if not sensor_reading:

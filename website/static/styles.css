@@ -241,37 +241,6 @@ select:focus {
     text-align: center;
 }
 
-.centered-container {
-    display: flex;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    justify-content: center; /* Center horizontally */
-    align-items: center;     /* Center vertically (if needed) */
-    height: 100%;            /* Set a height if you want vertical centering */
-}
-
-.centered-container {
-    display: flex;
-    flex-direction: column;  /* Stacks items vertically */
-    align-items: center;     /* Centers items horizontally */
-    justify-content: center; /* Centers items vertically, useful if there's extra space */
-    width: 100%;             /* Ensures the container takes full width */
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.centered-container h2 {
-    text-align: center;  /* Centers the text of h2 elements */
-    width: 100%;         /* Ensures the h2 element takes full container width */
-    margin-bottom: 10px; /* Adds some space between the h2 and the canvas */
-}
-
-
-canvas {
-    width: 100% !important; /* Ensures canvas takes up the full container width */
-    height: 400px !important; /* Adjust height as needed */
-}
-
 .min-max-container {
     text-align: center;
     margin-top: 20px;
@@ -780,49 +749,77 @@ body {
 
 .centered-container {
     display: flex;
-    flex-direction: column;  /* Stacks items vertically */
-    align-items: center;     /* Centers items horizontally */
-    justify-content: center; /* Centers items vertically, useful if there's extra space */
-    width: 100%;             /* Ensures the container takes full width */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
 .graphs-container {
-    display: flex;           /* Display items in a row */
-    justify-content: space-around; /* Space out the graphs evenly */
-    width: 100%;             /* Take up the full width of the container */
-    flex-wrap: wrap;         /* Allow graphs to wrap to the next line if necessary */
+    display: flex;
+    flex-direction: column; /* Stacks items vertically */
+    align-items: center; /* Align items in the center */
+    width: 100%;
 }
 
 .graph-item {
-    flex: 1;                 /* Allow graphs to take equal space */
-    min-width: 300px;        /* Minimum width of each graph */
-    margin: 10px;            /* Margin around each graph */
+    flex: 1;
+    min-width: 300px;
+    margin: 10px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-canvas {
-    width: 100% !important; /* Ensures canvas takes up the full container width */
-    height: 400px !important; /* Adjust height as needed */
+#graph {
+    width: 70% !important;
+    height: 70% !important; /* Adjust height as needed to ensure both graphs fit within the viewport */
 }
 
-.graphs-container {
+#precipitationGraph {
+    width: 70% !important;
+    height: 260px !important; /* Adjust height as needed to ensure both graphs fit within the viewport */
+}
+
+#zoomSliderContainer {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
-.centered-container {
-    flex: 1;
-    margin: 20px;
+#zoomSliderContainer label {
+    margin-bottom: 10px;
 }
 
-canvas {
-    width: 100% !important; /* Ensures canvas takes up the full container width */
-    height: 400px !important; /* Adjust height as needed */
+.hidden {
+    display: none;
 }
+
+.spinner {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto; /* Center the spinner horizontally */
+    display: block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
+}
+
+
 
 
 

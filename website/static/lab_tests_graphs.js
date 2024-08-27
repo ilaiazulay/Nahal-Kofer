@@ -7,27 +7,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const MinMaxTitle = document.getElementById("MinMaxTitle");
     const barChartRadio = document.getElementById('barChart');
     const lineChartRadio = document.getElementById('lineChart');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomSliderContainer = document.getElementById('zoomSliderContainer');
 
-    optionsSelect.addEventListener("change", fetchData);
+    optionsSelect.addEventListener("change", function() {
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
 
-    barChartRadio.addEventListener('change', fetchData);
-    lineChartRadio.addEventListener('change', fetchData);
+    barChartRadio.addEventListener('change', function() {
+        zoomSliderContainer.classList.add('hidden');
+        zoomSlider.value = 0;  // Reset the slider
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
+
+    lineChartRadio.addEventListener('change', function() {
+        zoomSliderContainer.classList.remove('hidden');
+        zoomSlider.value = 0;  // Reset the slider
+        if (optionsSelect.value) {
+            fetchData();
+        }
+    });
+
+    zoomSlider.addEventListener('input', handleZoom);
 
     function fetchData() {
         var selectedOption = optionsSelect.value;
-        var payload = {
-            option: selectedOption
-        };
+
+        if (!selectedOption) {
+            alert("You have to pick a parameter.");
+            return;
+        }
 
         if (!startDate.value || !endDate.value) {
             alert("You have to pick both a start date and an end date.");
             return;
         }
-        fetchPrecipitationData(startDate.value, endDate.value);
-        payload.dateData = {
-            startDate: startDate.value,
-            endDate: endDate.value
+
+        var payload = {
+            option: selectedOption,
+            dateData: {
+                startDate: startDate.value,
+                endDate: endDate.value
+            }
         };
+
+        fetchPrecipitationData(startDate.value, endDate.value);
 
         if (barChartRadio.checked) {
             fetch('/get_graph_data', {
@@ -144,10 +172,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         type: 'time',
+                        time: {
+                            unit: 'day'  // Show only the date on the x-axis
+                        },
                         title: {
                             display: true,
                             text: 'Date'
-                        }
+                        },
+                        min: startDate.value,
+                        max: endDate.value
                     },
                     y: {
                         beginAtZero: true,
@@ -164,23 +197,73 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
-                            mode: 'x',
+                            enabled: false,  // Disable direct pan
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,  // Disable direct wheel zoom
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false  // Disable direct pinch zoom
                             },
                             mode: 'x',
+                            onZoomComplete: syncCharts
                         }
                     }
                 },
                 responsive: true
             }
         });
+    }
+
+    function handleZoom(event) {
+        const zoomLevel = event.target.value;
+        const min = parseInt(zoomSlider.min);
+        const max = parseInt(zoomSlider.max);
+        const scale = 1 + (zoomLevel - min) / (max - min) * 9; // Scale factor from 1 to 10
+
+        zoomChart(window.myChart, scale);
+        zoomChart(window.precipitationChart, scale);
+    }
+
+    function zoomChart(chart, scale) {
+        if (!chart) return;
+        const { min: initialMin, max: initialMax } = chart.scales.x.originalRange || {
+            min: chart.scales.x.min,
+            max: chart.scales.x.max
+        };
+
+        // Store the initial range if not already stored
+        if (!chart.scales.x.originalRange) {
+            chart.scales.x.originalRange = { min: initialMin, max: initialMax };
+        }
+
+        const range = initialMax - initialMin;
+        const newRange = range / scale;
+        const newMin = initialMin + (range - newRange) / 2;
+        const newMax = initialMax - (range - newRange) / 2;
+
+        chart.scales.x.options.min = newMin;
+        chart.scales.x.options.max = newMax;
+        chart.update();
+    }
+
+    function syncCharts({ chart }) {
+        const xScale = chart.scales.x;
+        const newMin = xScale.min;
+        const newMax = xScale.max;
+
+        if (window.precipitationChart && window.precipitationChart !== chart) {
+            window.precipitationChart.scales.x.options.min = newMin;
+            window.precipitationChart.scales.x.options.max = newMax;
+            window.precipitationChart.update();
+        }
+
+        if (window.myChart && window.myChart !== chart) {
+            window.myChart.scales.x.options.min = newMin;
+            window.myChart.scales.x.options.max = newMax;
+            window.myChart.update();
+        }
     }
 
     function generateBackgroundColor(index) {
@@ -266,107 +349,149 @@ document.addEventListener('DOMContentLoaded', function() {
         minMaxContainer.appendChild(table);
     }
 
-    function fetchPrecipitationData(startDate, endDate) {
-        const token = 'EhbOAoVcydnYoYpiFFwDAFzfqNVJcNfW';
-        const stationId = 'GHCND:USW00094728';
-        const datasetId = 'GHCND';
-        const dataTypeId = 'PRCP';
-        const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
+function fetchPrecipitationData(startDate, endDate) {
+    const token = 'EhbOAoVcydnYoYpiFFwDAFzfqNVJcNfW';
+    const stationId = 'GHCND:USW00094728';
+    const datasetId = 'GHCND';
+    const dataTypeId = 'PRCP';
+    const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
 
-        fetch(url, {
-            headers: {
-                'token': token
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Precipitation data:', data);
-            displayPrecipitationGraph(data);
-        })
-        .catch(error => {
-            console.error('Error fetching precipitation data:', error);
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const precipitationGraph = document.getElementById('precipitationGraph');
+
+    // Clear the previous precipitation graph
+    if (window.precipitationChart) {
+        window.precipitationChart.destroy();
+    }
+    precipitationGraph.getContext('2d').clearRect(0, 0, precipitationGraph.width, precipitationGraph.height);
+
+    loadingSpinner.classList.remove('hidden');
+
+    fetch(url, {
+        headers: {
+            'token': token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        displayPrecipitationGraph(data, startDate, endDate);
+        loadingSpinner.classList.add('hidden');
+    })
+    .catch(error => {
+        console.error('Error fetching precipitation data:', error);
+        setTimeout(() => {
+            fetchPrecipitationData(startDate, endDate);
+        }, 3000); // Retry after 3 seconds
+    });
+}
+
+function displayPrecipitationGraph(data, startDate, endDate) {
+    var labels = [];
+    var precipitationData = [];
+
+    if (precipitationTitle) {
+        precipitationTitle.textContent = `Precipitation Data`;
+    }
+
+    if (data && data.results) {
+        data.results.forEach(result => {
+            labels.push(result.date.split('T')[0]); // Only display the date
+            precipitationData.push(result.value);
         });
     }
 
-    function displayPrecipitationGraph(data) {
-        var labels = [];
-        var precipitationData = [];
+    var ctx = document.getElementById('precipitationGraph').getContext('2d');
+    if (window.precipitationChart) {
+        window.precipitationChart.destroy();
+    }
 
-        if(precipitationTitle) {
-            precipitationTitle.textContent = `Precipitation Data`;
-        }
-
-        if (data && data.results) {
-            data.results.forEach(result => {
-                labels.push(result.date);
-                precipitationData.push(result.value);
-            });
-        }
-
-        var ctx = document.getElementById('precipitationGraph').getContext('2d');
-        if (window.precipitationChart) {
-            window.precipitationChart.destroy();
-        }
-
-        window.precipitationChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Daily Precipitation (mm)',
-                    data: precipitationData,
-                    backgroundColor: 'rgba(66, 135, 245, 0.2)',
-                    borderColor: 'rgba(66, 135, 245, 1)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    fill: true
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
+    window.precipitationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Daily Precipitation (mm)',
+                data: precipitationData,
+                backgroundColor: 'rgba(66, 135, 245, 0.2)',
+                borderColor: 'rgba(66, 135, 245, 1)',
+                borderWidth: 1,
+                pointRadius: 2,
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day' // Show only the date on the x-axis
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Precipitation (mm)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
+                    title: {
                         display: true,
-                        position: 'top'
+                        text: 'Date'
+                    },
+                    min: startDate,
+                    max: endDate
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Precipitation (mm)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                zoom: {
+                    pan: {
+                        enabled: false,
                     },
                     zoom: {
-                        pan: {
-                            enabled: true,
-                            mode: 'x',
+                        wheel: {
+                            enabled: false,
                         },
-                        zoom: {
-                            wheel: {
-                                enabled: true,
-                            },
-                            pinch: {
-                                enabled: true
-                            },
-                            mode: 'x',
-                        }
+                        pinch: {
+                            enabled: false
+                        },
+                        mode: 'x',
+                        onZoomComplete: syncCharts
                     }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+
+
+    function syncCharts({ chart }) {
+        const xScale = chart.scales.x;
+        const newMin = xScale.min;
+        const newMax = xScale.max;
+
+        if (window.precipitationChart && window.precipitationChart !== chart) {
+            window.precipitationChart.scales.x.options.min = newMin;
+            window.precipitationChart.scales.x.options.max = newMax;
+            window.precipitationChart.update();
+        }
+
+        if (window.myChart && window.myChart !== chart) {
+            window.myChart.scales.x.options.min = newMin;
+            window.myChart.scales.x.options.max = newMax;
+            window.myChart.update();
+        }
     }
+
+    // Initialize the charts and fetch data when the page loads
 });

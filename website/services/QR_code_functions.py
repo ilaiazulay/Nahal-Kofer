@@ -3,8 +3,8 @@ import hashlib
 from datetime import datetime
 import qrcode
 from io import BytesIO
-from . import db
-from .models import QRCode, LabTest  # Assuming QRCode is your model
+from website import db
+from website.models import QRCode, LabTest  # Assuming QRCode is your model
 
 
 def generate_qr_code(location, name):
