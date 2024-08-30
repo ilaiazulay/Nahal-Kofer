@@ -50,7 +50,7 @@ The website contains a secret key and is restricted to use by authorized personn
    ```
 
 4. **Access the Website**:
-   - Navigate to `http://localhost:8000` to access the website locally.
+   - Navigate to `http://localhost:5000` to access the website locally.
   
 ## Screenshots
 
