@@ -39,10 +39,6 @@ The website contains a secret key and is restricted to use by authorized personn
      ```bash
      pip install -r requirements.txt
      ```
-   - Set up the SQLite database:
-     ```bash
-     python manage.py db_init
-     ```
 
 3. **Run the Application**:
    ```bash
