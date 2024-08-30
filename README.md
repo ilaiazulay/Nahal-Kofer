@@ -35,7 +35,7 @@ The website contains a secret key and is restricted to use by authorized personn
    ```
 
 2. **Set Up the Environment**:
-   - Install Python dependencies:
+   Install Python dependencies:
      ```bash
      pip install -r requirements.txt
      ```
