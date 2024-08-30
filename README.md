@@ -35,17 +35,18 @@ The website contains a secret key and is restricted to use by authorized personn
    ```
 
 2. **Set Up the Environment**:
+
    Install Python dependencies:
      ```bash
      pip install -r requirements.txt
      ```
 
-3. **Run the Application**:
+4. **Run the Application**:
    ```bash
    python main.py
    ```
 
-4. **Access the Website**:
+5. **Access the Website**:
    - Navigate to `http://localhost:5000` to access the website locally.
   
 ## Screenshots
