@@ -46,7 +46,7 @@ The website contains a secret key and is restricted to use by authorized personn
 
 3. **Run the Application**:
    ```bash
-   python app.py
+   python main.py
    ```
 
 4. **Access the Website**:
