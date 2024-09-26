@@ -23,7 +23,7 @@ def get_water_level_alert():
             else:
                 sensor_reading = int(sensor_reading["distance"])
 
-            if sensor_reading <= 27:
+            if sensor_reading <= 27:  # the sensor is 20 cm above the water surface
                 now = datetime.utcnow()
                 print("Alert condition met, processing alerts.")
                 municipality_users = User.query.filter_by(category='Municipality').all()
