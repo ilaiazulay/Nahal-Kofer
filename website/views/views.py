@@ -1,3 +1,5 @@
+import os
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import func
@@ -10,6 +12,7 @@ import json
 from website.services.excel_handler import validate_excel_file, extract_excel_file
 from website.models import LabTest, QRCode, Prediction, Location, Sensor
 from website.services.QR_code_functions import generate_qr_code
+import requests
 
 views = Blueprint('views', __name__)
 
@@ -71,6 +74,33 @@ def home():
 
     return render_template("home.html", user=current_user, distance=distance, flow=flow, ph=ph,
                            flood_prediction_alert=flood_prediction_alert, color=color)
+
+
+@views.route('/weather', methods=['GET'])
+def get_weather_data():
+    city = 'Tel-Aviv'
+    lat = 32.068424
+    lon = 34.824783
+    api_key = os.getenv('API_KEY')  # Use the API_KEY from your environment file
+
+    # Fetch current weather
+    current_weather_url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
+    forecast_url = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}'
+
+    try:
+        current_weather_response = requests.get(current_weather_url)
+        forecast_response = requests.get(forecast_url)
+
+        current_weather_data = current_weather_response.json()
+        forecast_data = forecast_response.json()
+
+        return jsonify({
+            "current_weather": current_weather_data,
+            "forecast": forecast_data
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @views.route('/upload_file', methods=['GET', 'POST'])
@@ -368,6 +398,32 @@ def get_line_graph_data():
 
     return jsonify(sorted_data_dict)
 
+
+@views.route('/get_precipitation_data', methods=['POST'])
+@login_required
+def get_precipitation_data():
+    data = request.get_json()
+    start_date = data.get('startDate')
+    end_date = data.get('endDate')
+
+    # Ensure both start_date and end_date are provided
+    if not start_date or not end_date:
+        return jsonify({"error": "Invalid date range"}), 400
+
+    token = os.getenv('TOKEN')  # Get the token from environment variables
+    station_id = 'GHCND:USW00094728'
+    dataset_id = 'GHCND'
+    data_type_id = 'PRCP'
+    url = f'https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid={dataset_id}&datatypeid={data_type_id}&stationid={station_id}&startdate={start_date}&enddate={end_date}&units=metric&limit=1000'
+
+    headers = {'token': token}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify(data)
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
 
 
 

@@ -350,12 +350,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 function fetchPrecipitationData(startDate, endDate) {
-    const token = 'EhbOAoVcydnYoYpiFFwDAFzfqNVJcNfW';
-    const stationId = 'GHCND:USW00094728';
-    const datasetId = 'GHCND';
-    const dataTypeId = 'PRCP';
-    const url = `https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetId}&datatypeid=${dataTypeId}&stationid=${stationId}&startdate=${startDate}&enddate=${endDate}&units=metric&limit=1000`;
-
     const loadingSpinner = document.getElementById('loadingSpinner');
     const precipitationGraph = document.getElementById('precipitationGraph');
 
@@ -367,18 +361,22 @@ function fetchPrecipitationData(startDate, endDate) {
 
     loadingSpinner.classList.remove('hidden');
 
-    fetch(url, {
+    // Send a request to the Flask backend to fetch precipitation data
+    fetch('/get_precipitation_data', {
+        method: 'POST',
         headers: {
-            'token': token
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            startDate: startDate,
+            endDate: endDate
+        })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
         displayPrecipitationGraph(data, startDate, endDate);
         loadingSpinner.classList.add('hidden');
     })
@@ -389,6 +387,7 @@ function fetchPrecipitationData(startDate, endDate) {
         }, 3000); // Retry after 3 seconds
     });
 }
+
 
 function displayPrecipitationGraph(data, startDate, endDate) {
     var labels = [];

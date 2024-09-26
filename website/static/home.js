@@ -1,32 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const apiKey = '87a8064c9b4357fcf99ad406e6e63f02'; // Replace 'YOUR_API_KEY' with your actual API key
-    const city = 'Tel-Aviv';
-    const lon = 34.824783;
-    const lat = 32.068424;
-    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    const weatherUrl = '/weather';  // Call Flask endpoint instead of OpenWeather API directly
 
-    fetch(currentWeatherUrl)
+    // Fetch weather data from the Flask backend
+    fetch(weatherUrl)
         .then(response => response.json())
         .then(data => {
-            displayWeather(data);
+            displayWeather(data.current_weather);
+            displayHourlyForecast(data.forecast.list);
+            displayDailyForecast(data.forecast.list);
         })
         .catch(error => {
-            console.error('Error fetching current weather data:', error);
-            alert('Error fetching current weather data. Please try again.');
-        });
-
-    fetch(forecastUrl)
-        .then(response => response.json())
-        .then(data => {
-            displayHourlyForecast(data.list);
-            displayDailyForecast(data.list);
-        })
-        .catch(error => {
-            console.error('Error fetching forecast data:', error);
-            alert('Error fetching forecast data. Please try again.');
+            console.error('Error fetching weather data:', error);
+            alert('Error fetching weather data. Please try again.');
         });
 });
+
 
 function displayWeather(data) {
     const weatherInfoDiv = document.getElementById('weather-info');
