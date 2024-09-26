@@ -142,12 +142,10 @@ def check_flood_risk():
         for i in range(5):
             target_date = datetime.utcnow().date() + timedelta(days=i)
             try:
-                print("before")
                 water_level_distance = get_water_level()
                 water_opacity = get_water_opacity()
                 expected_precipitation = get_expected_precipitation(target_date)
                 print(expected_precipitation)
-                print("before1")
 
                 # Convert precipitation prediction from string to float
                 predicted_precip_cm = float(expected_precipitation.split(": ")[1].split(" ")[0])
