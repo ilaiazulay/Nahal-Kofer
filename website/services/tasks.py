@@ -55,7 +55,7 @@ def send_alert_email(user, current_reading, now):
 def schedule_task(app, interval, task_function):
     next_run = datetime.now()
     while True:
-        time.sleep(max(0, (next_run - datetime.now()).total_seconds()))
+        time.sleep(max(0, (next_run - datetime.now()).total_seconds())) # first happens now then the next interval
 
         with app.app_context():
             task_function()
@@ -198,11 +198,30 @@ def get_water_opacity():
 
 def get_expected_precipitation(target_date):
     lat, lon = 32.068424, 34.824783  # Coordinates for Tel Aviv
-    api_key = os.getenv("API_KEY")
+    api_key = "87a8064c9b4357fcf99ad406e6e63f02"
     url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}"
 
     target_date_str = target_date.strftime('%Y-%m-%d')
 
     # Make the API request
     response = requests.get(url)
-    data = response.json
+    data = response.json()
+
+    total_precipitation = 0.0  # Total precipitation in mm
+
+    # Loop through the list of forecasts
+    for item in data['list']:
+        forecast_time = datetime.fromtimestamp(item['dt'])
+        forecast_date_str = forecast_time.strftime('%Y-%m-%d')
+
+        # Check if the forecast is for the target date
+        if forecast_date_str == target_date_str:
+            # Add the precipitation for this time interval
+            precipitation = item['rain'].get('3h', 0) if 'rain' in item else 0
+            total_precipitation += precipitation
+
+    # Convert mm to cm
+    total_precipitation_cm = total_precipitation / 10
+
+    return f"Predicted rain for {target_date_str}: {total_precipitation_cm:.2f} cm"
+
