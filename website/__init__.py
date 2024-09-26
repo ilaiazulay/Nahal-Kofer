@@ -6,7 +6,6 @@ from flask_login import LoginManager
 from dotenv import load_dotenv
 
 from website.services.mqtt_client import stop_mqtt
-from website.services.scheduler import setup_scheduler
 from flask_mail import Mail
 
 load_dotenv()
