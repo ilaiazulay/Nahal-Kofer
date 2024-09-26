@@ -198,7 +198,7 @@ def get_water_opacity():
 
 def get_expected_precipitation(target_date):
     lat, lon = 32.068424, 34.824783  # Coordinates for Tel Aviv
-    api_key = "87a8064c9b4357fcf99ad406e6e63f02"
+    api_key = os.getenv("API_KEY")
     url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}"
 
     target_date_str = target_date.strftime('%Y-%m-%d')
