@@ -233,12 +233,6 @@ def edit_lab_test(id):
                 bod2 = True
             else:
                 bod2 = False
-            # Add other fields as needed
-
-            # if sample_date is not None:
-            #     lab_test.sample_date = sample_date
-            # if analysis_date is not None:
-            #     lab_test.analysis_date = analysis_date
             lab_test.ph = ph
             lab_test.ph_2 = ph2
             lab_test.ph_average = ph_avg
