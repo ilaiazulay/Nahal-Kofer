@@ -24,34 +24,35 @@ def home():
 
     distance = get_distance_reading()
     distance = json.loads(distance)
+    lost_connection_value = 1000
     if not distance:
-        distance = 0
+        distance = lost_connection_value
     else:
         try:
             distance = int(distance["distance"])
         except:
-            distance = 0
+            distance = lost_connection_value
 
     flow = get_flow_rate_reading()
     flow = json.loads(flow)
     if not flow:
-        flow = 0
+        flow = lost_connection_value
     else:
         try:
             flow = int(flow["flow_rate"])
         except:
-            flow = 0
+            flow = lost_connection_value
 
     ph = get_ph_reading()
     try:
         ph = json.loads(ph)
         if not ph:
-            ph = 7
+            ph = lost_connection_value
         else:
             ph = int(ph["ph_value"])
     except (ValueError, TypeError):
         if not isinstance(ph, int):
-            ph = 7
+            ph = lost_connection_value
 
     today = datetime.utcnow()
     future_date = today + timedelta(days=5)
