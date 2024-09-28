@@ -498,50 +498,6 @@ def get_min_max():
 
     return jsonify(labels=labels, mins=mins, maxs=maxs)
 
-#
-# @views.route('/statistics', methods=['GET', 'POST'])
-# @login_required
-# def statistics():
-#     lab_tests = LabTest.query.all()
-#
-#     return render_template("statistics.html", user=current_user, lab_tests=lab_tests)
-
-
-@views.route('/get_correlation_graph_data', methods=['POST'])
-@login_required
-def get_correlation_graph_data():
-    option1 = request.json.get('option1')
-    option2 = request.json.get('option2')
-
-    lab_tests1 = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option1)).all()
-    lab_tests2 = LabTest.query.with_entities(LabTest.sample_date, getattr(LabTest, option2)).all()
-
-    # Extracting data for labels and values
-    labels = [str(sample) for sample, _ in lab_tests1]  # Use sample directly as label
-    values1 = np.array([value if value is not None else np.nan for _, value in lab_tests1], dtype=float)
-    values2 = np.array([value if value is not None else np.nan for _, value in lab_tests2], dtype=float)
-
-    # Filter out indices where either array has NaN or inf values
-    valid_indices = ~(np.isnan(values1) | np.isnan(values2) | np.isinf(values1) | np.isinf(values2))
-    values1_clean = values1[valid_indices]
-    values2_clean = values2[valid_indices]
-
-    # Calculate correlation
-    if len(values1_clean) > 1 and len(values2_clean) > 1:
-        correlation, _ = pearsonr(values1_clean, values2_clean)
-        correlation_message = f"Correlation: {correlation:.2f}"
-    else:
-        correlation_message = "Not enough data for correlation."
-
-    print(correlation_message)
-
-    # Convert cleaned data back to lists for JSON response
-    labels_clean = [labels[i] for i in np.where(valid_indices)[0]]
-    values1_clean = values1_clean.tolist()
-    values2_clean = values2_clean.tolist()
-
-    return jsonify(labels=labels_clean, values1=values1_clean, values2=values2_clean, correlation=correlation_message)
-
 
 @views.route('/sensor')
 @login_required
