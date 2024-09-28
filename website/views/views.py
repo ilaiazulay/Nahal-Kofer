@@ -180,12 +180,6 @@ def edit_lab_test(id):
 
     if request.method == 'POST':
         try:
-            # sample_date = request.form.get('analysis_date', None)
-            # if sample_date:
-            #     sample_date = datetime.strptime(sample_date, '%Y-%m-%d').date()
-            # analysis_date = request.form.get('analysis_date', None)
-            # if analysis_date:
-            #     analysis_date = datetime.strptime(analysis_date, '%Y-%m-%d').date()
             ph = request.form.get('ph', None)
             ph2 = request.form.get('ph2', None)
             ph_avg = request.form.get('phAvg', None)
