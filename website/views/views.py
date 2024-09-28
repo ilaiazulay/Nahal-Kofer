@@ -312,11 +312,7 @@ def get_graph_data():
     option = data.get('option')
     date_data = data.get('dateData', {})
 
-    if 'year' in date_data:
-        year = int(date_data['year'])
-        start_date = datetime(year, 1, 1)
-        end_date = datetime(year, 12, 31)
-    elif 'startDate' in date_data and 'endDate' in date_data:
+    if 'startDate' in date_data and 'endDate' in date_data:
         start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
         end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
     else:
