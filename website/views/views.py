@@ -499,65 +499,60 @@ def get_min_max():
     return jsonify(labels=labels, mins=mins, maxs=maxs)
 
 
-@views.route('/sensor')
-@login_required
-def sensor():
-    current_reading = get_distance_reading()
-    current_reading = json.loads(current_reading)
-    current_reading = int(current_reading["distance"])
-
-    flow_rate = get_flow_rate_reading()
-    flow_rate = json.loads(flow_rate)
-    flow_rate = float(flow_rate["flow_rate"])
-
-    flood_alert = ""
-    if current_reading <= 27:
-        flood_alert = "Water levels are high!"
-
-    today = datetime.utcnow()
-    future_date = today + timedelta(days=5)
-
-    # Query for any flood predictions within the next 5 days
-    flood_prediction = Prediction.query.filter(
-        Prediction.date >= today,
-        Prediction.date <= future_date,
-        Prediction.prediction == True
-    ).first()  # Get the first result if exists
-
-    if flood_prediction:
-        print(f"Flood predicted on {flood_prediction.date.strftime('%Y-%m-%d')}")
-        flood_prediction_alert = f"Flood alert for {flood_prediction.date.strftime('%Y-%m-%d')}!"
-        color = 'red'
-    else:
-        print("No flood predicted in the next 5 days.")
-        flood_prediction_alert = "No flood alert for the upcoming week."
-        color = 'green'
-
-    return render_template('sensor.html', user=current_user, distance=current_reading, flow_rate=flow_rate,
-                           flood_alert=flood_alert, flood_prediction_alert=flood_prediction_alert, color=color)
+# @views.route('/sensor')
+# @login_required
+# def sensor():
+#     current_reading = get_distance_reading()
+#     current_reading = json.loads(current_reading)
+#     current_reading = int(current_reading["distance"])
+#
+#     flow_rate = get_flow_rate_reading()
+#     flow_rate = json.loads(flow_rate)
+#     flow_rate = float(flow_rate["flow_rate"])
+#
+#     flood_alert = ""
+#     if current_reading <= 27:
+#         flood_alert = "Water levels are high!"
+#
+#     today = datetime.utcnow()
+#     future_date = today + timedelta(days=5)
+#
+#     # Query for any flood predictions within the next 5 days
+#     flood_prediction = Prediction.query.filter(
+#         Prediction.date >= today,
+#         Prediction.date <= future_date,
+#         Prediction.prediction == True
+#     ).first()  # Get the first result if exists
+#
+#     if flood_prediction:
+#         print(f"Flood predicted on {flood_prediction.date.strftime('%Y-%m-%d')}")
+#         flood_prediction_alert = f"Flood alert for {flood_prediction.date.strftime('%Y-%m-%d')}!"
+#         color = 'red'
+#     else:
+#         print("No flood predicted in the next 5 days.")
+#         flood_prediction_alert = "No flood alert for the upcoming week."
+#         color = 'green'
+#
+#     return render_template('sensor.html', user=current_user, distance=current_reading, flow_rate=flow_rate,
+#                            flood_alert=flood_alert, flood_prediction_alert=flood_prediction_alert, color=color)
 
 
 @views.route('/get_distance_sensor_data')
 def get_distance_sensor_data():
     current_reading = get_distance_reading()
     return current_reading
-    # return jsonify({"distance": current_reading})
 
 
 @views.route('/get_flow_sensor_data')
 def get_flow_sensor_data():
     current_reading = get_flow_rate_reading()
     return current_reading
-    # print(current_reading)
-    # return jsonify({"flow_rate": current_reading})
 
 
 @views.route('/get_ph_sensor_data')
 def get_ph_sensor_data():
     current_reading = get_ph_reading()
     return current_reading
-    # print(current_reading)
-    # return jsonify({"flow_rate": current_reading})
 
 
 @views.route('/submit_test', methods=['GET', 'POST'])
