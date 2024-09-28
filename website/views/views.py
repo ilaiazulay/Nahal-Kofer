@@ -392,7 +392,6 @@ def get_precipitation_data():
         return jsonify({"error": str(e)}), 500
 
 
-
 @views.route('/graphs/sensors', methods=['GET', 'POST'])
 @login_required
 def sensors_graphs():
@@ -409,11 +408,7 @@ def get_sensors_graph_data():
     option = data.get('option')
     date_data = data.get('dateData', {})
 
-    if 'year' in date_data:
-        year = int(date_data['year'])
-        start_date = datetime(year, 1, 1)
-        end_date = datetime(year, 12, 31)
-    elif 'startDate' in date_data and 'endDate' in date_data:
+    if 'startDate' in date_data and 'endDate' in date_data:
         start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
         end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
     else:
@@ -471,7 +466,6 @@ def get_sensors_graph_data():
     return jsonify(sorted_data_dict)
 
 
-
 @views.route('/get_min_max', methods=['POST'])
 @login_required
 def get_min_max():
@@ -479,11 +473,7 @@ def get_min_max():
     option = data.get('option')
     date_data = data.get('dateData', {})
 
-    if 'year' in date_data:
-        year = int(date_data['year'])
-        start_date = datetime(year, 1, 1)
-        end_date = datetime(year, 12, 31)
-    elif 'startDate' in date_data and 'endDate' in date_data:
+    if 'startDate' in date_data and 'endDate' in date_data:
         start_date = datetime.strptime(date_data['startDate'], '%Y-%m-%d')
         end_date = datetime.strptime(date_data['endDate'], '%Y-%m-%d')
     else:
@@ -508,13 +498,13 @@ def get_min_max():
 
     return jsonify(labels=labels, mins=mins, maxs=maxs)
 
-
-@views.route('/statistics', methods=['GET', 'POST'])
-@login_required
-def statistics():
-    lab_tests = LabTest.query.all()
-
-    return render_template("statistics.html", user=current_user, lab_tests=lab_tests)
+#
+# @views.route('/statistics', methods=['GET', 'POST'])
+# @login_required
+# def statistics():
+#     lab_tests = LabTest.query.all()
+#
+#     return render_template("statistics.html", user=current_user, lab_tests=lab_tests)
 
 
 @views.route('/get_correlation_graph_data', methods=['POST'])
