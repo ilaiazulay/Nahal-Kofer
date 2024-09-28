@@ -113,21 +113,18 @@ def upload_file():
 
         if request.method == 'POST':
             file = request.files.get('excel_file')  # Access the uploaded Excel file
-            print(file)
             if not file:
                 response = {
                     "message": 'No file provided',
                     "status": 'failed'
                 }
                 response_status = 400
-                print(1)
             elif file.filename == '':
                 response = {
                     "message": 'No file selected',
                     "status": 'failed'
                 }
                 response_status = 400
-                print(2)
             else:
                 print(f"Received file: {file.filename}")
                 if validate_excel_file(file) and extract_excel_file(file):
@@ -136,14 +133,12 @@ def upload_file():
                         "status": 'success'
                     }
                     response_status = 200
-                    print(3)
                 else:
                     response = {
                         "message": 'Invalid Excel file',
                         "status": 'failed'
                     }
                     response_status = 400
-                    print(4)
         return render_template("upload_file.html", user=current_user, response=response,
                                response_status=response_status)
     else:
@@ -156,7 +151,6 @@ def lab_tests():
     start_time = None
     finish_time = None
     lab_tests = LabTest.query.all()
-    print(lab_tests)
 
     if request.method == 'POST':
         string_start_time = request.form.get('start_time')
