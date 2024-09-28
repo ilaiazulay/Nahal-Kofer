@@ -150,19 +150,6 @@ def upload_file():
         return render_template("home.html", user=current_user)
 
 
-# @views.route('/delete-shift', methods=['POST'])
-# @login_required
-# def delete_shift():
-#     shift = json.loads(request.data)
-#     shift_id = shift['shiftId']
-#     shift = Shift.query.get(shift_id)
-#     if shift:
-#         if shift.user_id == current_user.id:
-#             db.session.delete(shift)
-#             db.session.commit()
-#
-#     return jsonify({})
-
 @views.route('/lab_tests', methods=['GET', 'POST'])
 @login_required
 def lab_tests():
